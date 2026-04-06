@@ -602,6 +602,9 @@ async function handlePhoto(file) {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+       'x-api-key': 'sk-ant-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',
+'anthropic-version': '2023-06-01',
+'anthropic-dangerous-direct-browser-access': 'true',
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 1000,
