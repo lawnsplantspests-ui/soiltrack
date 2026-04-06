@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>SoilTrack - Lawns Plants & Pests</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0c0c0c; color: #e7e5e4; font-family: Georgia, serif; min-height: 100vh; }
+  
+  /* HEADER */
+  .header { background: #111; border-bottom: 1px solid #292524; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #4ade80, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .logo-text { font-size: 17px; font-weight: 700; color: #f5f5f4; }
+  .logo-sub { font-size: 10px; color: #78716c; font-family: monospace; }
+  .nav { display: flex; gap: 4px; }
+  .nav-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; color: #a8a29e; font-family: sans-serif; white-space: nowrap; }
+  .nav-btn.active { background: #4ade8022; color: #4ade80; }
+
+  /* MAIN */
+  .main { padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card { background: #161616; border: 1px solid #222; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .sec-title { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #57534e; margin-bottom: 12px; font-family: sans-serif; }
+  .sub-head { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4ade8077; margin: 16px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #1f1f1f; font-family: sans-serif; }
+
+  /* STATS GRID */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: #161616; border: 1px solid #222; border-radius: 10px; padding: 14px; }
+  .stat-icon { font-size: 22px; margin-bottom: 4px; }
+  .stat-val { font-size: 28px; font-weight: 900; color: #4ade80; font-family: Georgia, serif; }
+  .stat-label { font-size: 11px; color: #78716c; font-family: sans-serif; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: #78716c; margin-bottom: 3px; display: block; font-family: sans-serif; }
+  .form-input { width: 100%; background: #1a1a1a; border: 1px solid #292524; border-radius: 6px; padding: 8px 12px; color: #e7e5e4; font-size: 13px; font-family: monospace; }
+  .form-input:focus { outline: none; border-color: #4ade8055; }
+  select.form-input { cursor: pointer; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* BUTTONS */
+  .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
+  .btn-green:hover { opacity: 0.9; }
+  .btn-outline { background: transparent; border: 1px solid #292524; border-radius: 6px; color: #a8a29e; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: sans-serif; }
+  .btn-full { width: 100%; margin-top: 8px; padding: 11px 0; }
+
+  /* CUSTOMER ROWS */
+  .customer-row { padding: 10px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; transition: all 0.15s; }
+  .customer-row:hover { background: #1a1a1a; border-color: #2a2a2a; }
+  .customer-name { font-weight: 700; color: #f5f5f4; font-size: 15px; }
+  .customer-sub { font-size: 11px; color: #78716c; font-family: sans-serif; margin-top: 2px; }
+
+  /* BADGES */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: 700; font-family: monospace; }
+  .badge-green { background: #4ade8018; color: #4ade80; border: 1px solid #4ade8033; }
+  .badge-red { background: #f8717118; color: #f87171; border: 1px solid #f8717133; }
+  .badge-orange { background: #fb923c18; color: #fb923c; border: 1px solid #fb923c33; }
+  .badge-gray { color: #57534e; }
+
+  /* TABLES */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 6px 10px; font-weight: 600; border-bottom: 1px solid #222; font-family: sans-serif; font-size: 11px; color: #57534e; text-align: left; }
+  th.year-col { text-align: center; color: #a8a29e; font-family: monospace; font-size: 13px; }
+  td { padding: 7px 10px; border-bottom: 1px solid #161616; }
+  td.center { text-align: center; }
+  .section-row td { padding: 10px 10px 4px; color: #4ade8077; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-family: sans-serif; border-bottom: 1px solid #1e1e1e; }
+  .metric-label { font-weight: 600; color: #d6d3d1; font-family: sans-serif; font-size: 13px; }
+  .metric-explain-btn { font-size: 10px; color: #4ade8066; cursor: pointer; font-family: sans-serif; text-decoration: underline dotted; border: none; background: none; padding: 0; }
+  .metric-explain { display: none; margin-top: 6px; font-size: 11px; color: #a8a29e; font-family: sans-serif; line-height: 1.6; max-width: 240px; background: #111; border-radius: 6px; padding: 8px 10px; border: 1px solid #222; }
+  .ideal-range { color: #57534e; font-size: 11px; font-family: monospace; white-space: nowrap; }
+
+  /* IMPROVEMENT SCORE */
+  .score-card { display: flex; align-items: center; gap: 10px; background: #111; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  .score-pct { font-size: 34px; font-weight: 900; font-family: Georgia, serif; line-height: 1; }
+  .score-label { color: #d6d3d1; font-weight: 700; font-size: 13px; font-family: sans-serif; }
+  .score-sub { color: #78716c; font-size: 11px; font-family: sans-serif; }
+
+  /* UPLOAD ZONE */
+  .upload-zone { border: 2px dashed #292524; border-radius: 10px; padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
+  .upload-zone:hover { border-color: #4ade8055; }
+  .upload-zone.active { border-color: #4ade80; }
+  .upload-icon { font-size: 36px; margin-bottom: 10px; }
+  .upload-text { color: #a8a29e; font-size: 13px; font-family: sans-serif; }
+  .upload-sub { color: #57534e; font-size: 11px; margin-top: 4px; font-family: sans-serif; }
+  .upload-preview { max-height: 180px; border-radius: 8px; margin-bottom: 10px; max-width: 100%; }
+
+  /* NOTIFICATION */
+  .notification { position: fixed; top: 16px; right: 16px; border-radius: 8px; padding: 12px 18px; font-size: 14px; font-weight: 600; z-index: 999; box-shadow: 0 8px 32px #00000088; font-family: sans-serif; display: none; }
+  .notification.success { background: #14532d; border: 1px solid #4ade80; color: #bbf7d0; }
+  .notification.error { background: #7f1d1d; border: 1px solid #f87171; color: #fca5a5; }
+
+  /* REPORT */
+  .report-paper { background: white; color: #1a1a1a; border-radius: 12px; padding: 32px; font-family: sans-serif; }
+  .report-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 3px solid #2d5a1b; padding-bottom: 16px; }
+  .report-logo { font-size: 22px; font-weight: 900; color: #2d5a1b; letter-spacing: -1px; line-height: 1.1; }
+  .report-logo span { display: block; }
+  .report-customer { text-align: right; }
+  .report-customer-name { font-size: 18px; font-weight: 700; color: #2d5a1b; }
+  .report-customer-sub { font-size: 12px; color: #666; margin-top: 3px; }
+  .report-section-title { font-size: 12px; font-weight: 700; color: #2d5a1b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
+  .report-table th { background: #f0f7ee; padding: 7px 10px; text-align: left; color: #2d5a1b; font-weight: 600; }
+  .report-table th.center { text-align: center; }
+  .report-table td { padding: 7px 10px; border-bottom: 1px solid #eee; }
+  .report-table td.center { text-align: center; font-weight: 700; font-family: monospace; }
+  .report-table tr:nth-child(even) td { background: #f9f9f9; }
+  .report-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .report-footer-legend { font-size: 11px; color: #999; }
+  .report-footer-brand { font-size: 12px; color: #2d5a1b; font-weight: 700; }
+
+  /* LOADING */
+  .loading { text-align: center; padding: 60px; color: #78716c; font-family: sans-serif; }
+
+  /* DETAIL HEADER */
+  .detail-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+
+  @media print {
+    .header, .nav, .back-row, .no-print { display: none !important; }
+    body { background: white; }
+    .main { padding: 0; }
+    .report-paper { border-radius: 0; box-shadow: none; }
+  }
+
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .nav-btn { padding: 6px 8px; font-size: 11px; }
+    .logo-text { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notification" id="notification"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🌱</div>
+    <div>
+      <div class="logo-text">SoilTrack</div>
+      <div class="logo-sub">Lawns Plants & Pests LLC</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showPage('add')">+ Add</button>
+    <button class="nav-btn" onclick="showPage('report')">Reports</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div style="margin-bottom:20px">
+      <div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:4px">Farm Health Overview</div>
+      <div style="color:#78716c;font-size:13px;font-family:sans-serif" id="dashboard-sub">Loading...</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-icon">👨‍🌾</div><div class="stat-val" id="stat-customers">0</div><div class="stat-label">Customers</div></div>
+      <div class="stat-card"><div class="stat-icon">🧪</div><div class="stat-val" id="stat-samples">0</div><div class="stat-label">Total Samples</div></div>
+      <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val" id="stat-years">0</div><div class="stat-label">Years of Data</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Customers</div>
+      <div id="customer-list"><div class="loading">Loading from Google Sheets...</div></div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER DETAIL -->
+  <div class="page" id="page-customer">
+    <div class="detail-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="btn-outline" onclick="showPage('dashboard')">← Back</button>
+        <div>
+          <div style="font-size:20px;font-weight:700;color:#f5f5f4" id="detail-name"></div>
+          <div style="font-size:12px;color:#78716c;font-family:sans-serif" id="detail-field"></div>
+        </div>
+      </div>
+      <button class="btn-green" onclick="showPage('report')">📄 Generate Report</button>
+    </div>
+    <div id="detail-score"></div>
+    <div class="card">
+      <div class="sec-title">Limestone & Nutrient Recommendations</div>
+      <div class="table-wrap"><table id="rec-table"></table></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Lab Results — Year over Year</div>
+      <div class="table-wrap"><table id="lab-table"></table></div>
+    </div>
+  </div>
+
+  <!-- ADD SAMPLE -->
+  <div class="page" id="page-add">
+    <div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:20px">Add Soil Sample</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="sec-title">1. Upload Report Photo</div>
+        <input type="file" accept="image/*" id="photo-input" style="display:none" onchange="handlePhoto(this.files[0])">
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+          <div id="upload-preview-wrap"><div class="upload-icon">📸</div></div>
+          <div class="upload-text" id="upload-text">Tap to photo a Penn State soil report</div>
+          <div class="upload-sub">AI extracts all values automatically</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sec-title">2. Review & Save</div>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Customer Name</label>
+            <input class="form-input" id="f-customer" list="customer-datalist" placeholder="Type or select">
+            <datalist id="customer-datalist"></datalist>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <input class="form-input" id="f-year" type="number" value="2024">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Field / Location</label>
+          <input class="form-input" id="f-field" placeholder="e.g. Entire Lawn">
+        </div>
+        <div class="sub-head">Limestone & Nutrient Recommendations</div>
+        <div class="form-group">
+          <label class="form-label">Limestone (lb/1000 ft²)</label>
+          <select class="form-input" id="f-limestone">
+            <option value="None">None</option>
+            <option value="25">25 lb/1000 ft²</option>
+            <option value="50">50 lb/1000 ft²</option>
+            <option value="75">75 lb/1000 ft²</option>
+            <option value="100">100 lb/1000 ft²</option>
+            <option value="125">125 lb/1000 ft²</option>
+            <option value="150">150 lb/1000 ft²</option>
+            <option value="175">175 lb/1000 ft²</option>
+            <option value="200">200 lb/1000 ft²</option>
+            <option value="225">225 lb/1000 ft²</option>
+            <option value="250">250 lb/1000 ft²</option>
+          </select>
+          <div style="font-size:10px;color:#57534e;margin-top:3px;font-family:sans-serif">Split into 2 apps if over 100 lb. Aerate first.</div>
+        </div>
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Nitrogen (N)</label>
+            <input class="form-input" id="f-recN" placeholder="None">
+            <div style="font-size:10px;color:#57534e;font-family:sans-serif">lb/1000 ft²/yr</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phosphorus (P₂O₅)</label>
+            <input class="form-input" id="f-recP" placeholder="None">
+            <div style="font-size:10px;color:#57534e;font-family:sans-serif">lb/1000 ft²/yr</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Potassium (K₂O)</label>
+            <input class="form-input" id="f-recK" placeholder="None">
+            <div style="font-size:10px;color:#57534e;font-family:sans-serif">lb/1000 ft²/yr</div>
+          </div>
+        </div>
+        <div class="sub-head">Lab Results</div>
+        <div class="grid-2" id="lab-fields"></div>
+        <button class="btn-green btn-full" onclick="saveSample()">💾 Save to Google Sheets</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div class="sec-title" style="margin-bottom:0">Add New Customer</div>
+        <button class="btn-outline" onclick="toggleNewCustomer()">+ New Customer</button>
+      </div>
+      <div id="new-customer-form" style="display:none">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="nc-name"></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="nc-email" type="email"></div>
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="nc-phone" type="tel"></div>
+          <div class="form-group"><label class="form-label">Field / Location</label><input class="form-input" id="nc-field"></div>
+          <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="nc-address"></div>
+          <div class="form-group"><label class="form-label">City</label><input class="form-input" id="nc-city"></div>
+        </div>
+        <button class="btn-green btn-full" onclick="saveCustomer()">Save Customer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="page" id="page-report">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px" class="no-print">
+      <div style="font-size:22px;font-weight:700;color:#f5f5f4">Generate Customer Report</div>
+      <button class="btn-green" onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+    <div class="card no-print">
+      <div class="sec-title">Select Customer</div>
+      <select class="form-input" id="report-customer-select" onchange="renderReport()">
+        <option value="">-- Select a customer --</option>
+      </select>
+    </div>
+    <div id="report-output"></div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4DFO_qHZkzBO_a4LH0CZ-vPJU8tG4mfFoFUYQrBgepRkmXflDcvWF4b1IVPJuHOtAxA/exec';
+const SHEET_ID = '10-2QSreupS-8sdtx3V5fDrZ4uqAHnwHMOuvGVRKL9u8';
+const API_KEY = 'YOUR_API_KEY_HERE';
+
+const METRICS = [
+  { key: 'pH', label: 'Soil pH', unit: '', idealMin: 6.0, idealMax: 7.0, section: 'Lab Results', explanation: 'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0. Below 6.0, phosphorus and calcium become less available.' },
+  { key: 'Phosphorus', label: 'Phosphorus (P)', unit: 'lb/A', idealMin: 50, idealMax: 100, section: 'Lab Results', explanation: 'Drives root development and early establishment. Measured in pounds per acre using Mehlich 3 extraction. High levels can interfere with zinc and iron uptake.' },
+  { key: 'OrganicMatter', label: 'Organic Matter', unit: '%', idealMin: 3, idealMax: 6, section: 'Lab Results', explanation: 'Improves water retention, feeds soil biology, and buffers pH swings. Even 0.1% gain per year is meaningful progress.' },
+  { key: 'Acidity', label: 'Buffer Acidity', unit: 'meq/100g', idealMin: 0, idealMax: 2, section: 'Exchangeable Cations', explanation: 'Reserve acidity held by hydrogen and aluminum ions. Higher values mean more limestone is needed to raise pH.' },
+  { key: 'Potassium', label: 'Potassium (K)', unit: 'meq/100g', idealMin: 0.15, idealMax: 0.40, section: 'Exchangeable Cations', explanation: 'Essential for water regulation, disease resistance, and winter hardiness. Low K leads to poor drought tolerance.' },
+  { key: 'Magnesium', label: 'Magnesium (Mg)', unit: 'meq/100g', idealMin: 0.5, idealMax: 2.5, section: 'Exchangeable Cations', explanation: 'The central atom in every chlorophyll molecule. Plants cannot photosynthesize without it.' },
+  { key: 'Calcium', label: 'Calcium (Ca)', unit: 'meq/100g', idealMin: 5, idealMax: 15, section: 'Exchangeable Cations', explanation: 'Builds strong cell walls and improves soil structure. Primary component of agricultural limestone.' },
+  { key: 'CEC', label: 'CEC', unit: 'meq/100g', idealMin: 10, idealMax: 20, section: 'Exchangeable Cations', explanation: 'Cation Exchange Capacity — total ability of soil to hold nutrient ions. Higher means more nutrient-holding capacity and less leaching risk.' },
+  { key: 'SatK', label: 'K Saturation', unit: '%', idealMin: 2, idealMax: 5, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by potassium. Too high blocks magnesium and calcium uptake.' },
+  { key: 'SatMg', label: 'Mg Saturation', unit: '%', idealMin: 10, idealMax: 20, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by magnesium. Low Mg saturation causes chlorophyll deficiency.' },
+  { key: 'SatCa', label: 'Ca Saturation', unit: '%', idealMin: 60, idealMax: 80, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by calcium. Low Ca usually signals an acidic soil needing lime.' },
+];
+
+const LAB_SECTIONS = {
+  'Lab Results': ['pH','Phosphorus','OrganicMatter'],
+  'Exchangeable Cations': ['Acidity','Potassium','Magnesium','Calcium','CEC'],
+  '% Saturation of CEC': ['SatK','SatMg','SatCa'],
+};
+
+let customers = [];
+let samples = [];
+let selectedCustomer = null;
+
+// ---- DATA LOADING ----
+async function loadData() {
+  try {
+    const [cRes, sRes] = await Promise.all([
+      fetch(`${SCRIPT_URL}?sheet=Customers`),
+      fetch(`${SCRIPT_URL}?sheet=Samples`)
+    ]);
+    const cData = await cRes.json();
+    const sData = await sRes.json();
+    if (cData.length > 1) {
+      const [ch, ...crows] = cData;
+      customers = crows.map(r => Object.fromEntries(ch.map((h,i) => [h, r[i]||''])));
+    }
+    if (sData.length > 1) {
+      const [sh, ...srows] = sData;
+      samples = srows.map(r => Object.fromEntries(sh.map((h,i) => [h, r[i]||''])));
+    }
+    renderDashboard();
+    populateCustomerDropdowns();
+  } catch(e) {
+    notify('Could not load data. Check your connection.', 'error');
+    document.getElementById('customer-list').innerHTML = '<div style="color:#57534e;font-family:sans-serif;font-size:13px">Could not load data. Check your Apps Script URL.</div>';
+  }
+}
+
+async function saveToSheet(sheet, row) {
+  await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({ sheet, row }),
+  });
+}
+
+// ---- NAVIGATION ----
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = { dashboard: 0, add: 1, report: 2, customer: 0 };
+  if (map[id] !== undefined) btns[map[id]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ---- DASHBOARD ----
+function renderDashboard() {
+  const years = [...new Set(samples.map(s => s.Year))];
+  document.getElementById('stat-customers').textContent = customers.length;
+  document.getElementById('stat-samples').textContent = samples.length;
+  document.getElementById('stat-years').textContent = years.length;
+  document.getElementById('dashboard-sub').textContent = `${customers.length} customers · ${samples.length} samples · ${years.length} years of data`;
+
+  const list = document.getElementById('customer-list');
+  if (customers.length === 0) {
+    list.innerHTML = '<div style="color:#57534e;font-family:sans-serif;font-size:13px">No customers yet. Add your first sample to get started.</div>';
+    return;
+  }
+  list.innerHTML = customers.map(c => {
+    const cr = samples.filter(s => s.CustomerName === c.Name).sort((a,b) => a.Year - b.Year);
+    const yrs = [...new Set(cr.map(r => r.Year))].join(', ');
+    return `<div class="customer-row" onclick="selectCustomer('${c.Name.replace(/'/g,"\\'")}')">
+      <div>
+        <div class="customer-name">${c.Name}</div>
+        <div class="customer-sub">${c.Field || ''} · ${cr.length} sample${cr.length !== 1 ? 's' : ''} · ${yrs}</div>
+      </div>
+      <div style="color:#78716c;font-size:20px">›</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- CUSTOMER DETAIL ----
+function selectCustomer(name) {
+  selectedCustomer = customers.find(c => c.Name === name);
+  if (!selectedCustomer) return;
+  const sorted = samples.filter(s => s.CustomerName === name).sort((a,b) => a.Year - b.Year);
+
+  document.getElementById('detail-name').textContent = name;
+  document.getElementById('detail-field').textContent = selectedCustomer.Field || '';
+
+  // Score
+  let imp = 0, total = 0;
+  METRICS.forEach(m => {
+    const vals = sorted.map(r => parseFloat(r[m.key])).filter(v => !isNaN(v));
+    if (vals.length >= 2) { total++; if (vals[vals.length-1] > vals[0]) imp++; }
+  });
+  const pct = total ? Math.round((imp/total)*100) : 0;
+  const color = pct >= 70 ? '#4ade80' : pct >= 40 ? '#fb923c' : '#f87171';
+  document.getElementById('detail-score').innerHTML = sorted.length >= 2 ? `
+    <div class="score-card" style="border:1px solid ${color}33">
+      <div class="score-pct" style="color:${color}">${pct}%</div>
+      <div><div class="score-label">Metrics Improving</div><div class="score-sub">${imp} of ${total} nutrients trending up</div></div>
+    </div>` : '';
+
+  // Rec table
+  const recRows = [
+    { key: 'LimestoneLbs', label: '🪨 Limestone', note: 'Raises pH. Split if over 100 lb. Aerate first.' },
+    { key: 'RecN', label: '🌿 Nitrogen (N)', note: 'Split into multiple apps through the season.' },
+    { key: 'RecP', label: '🌱 Phosphorus (P₂O₅)', note: 'Only apply what the test recommends.' },
+    { key: 'RecK', label: '💧 Potassium (K₂O)', note: 'Important for winter hardiness.' },
+  ];
+  document.getElementById('rec-table').innerHTML = `
+    <thead><tr>
+      <th>Recommendation</th>
+      ${sorted.map(r => `<th class="year-col">${r.Year}</th>`).join('')}
+      <th>Notes</th>
+    </tr></thead>
+    <tbody>${recRows.map(row => `<tr>
+      <td style="font-weight:600;color:#d6d3d1;white-space:nowrap">${row.label}</td>
+      ${sorted.map(r => `<td class="center">${recBadge(r[row.key])}</td>`).join('')}
+      <td style="color:#78716c;font-size:11px;font-family:sans-serif;max-width:180px;line-height:1.5">${row.note}</td>
+    </tr>`).join('')}</tbody>`;
+
+  // Lab table
+  let labHTML = `<thead><tr>
+    <th>Metric</th>
+    ${sorted.map(r => `<th class="year-col">${r.Year}</th>`).join('')}
+    <th>Ideal</th>
+  </tr></thead><tbody>`;
+  Object.entries(LAB_SECTIONS).forEach(([section, keys]) => {
+    labHTML += `<tr class="section-row"><td colspan="${sorted.length + 2}">${section}</td></tr>`;
+    keys.forEach(key => {
+      const m = METRICS.find(x => x.key === key);
+      if (!m) return;
+      const eid = 'exp-' + key;
+      labHTML += `<tr>
+        <td style="min-width:150px">
+          <div class="metric-label">${m.label}</div>
+          <button class="metric-explain-btn" onclick="toggleExplain('${eid}')">what is this? ▼</button>
+          <div class="metric-explain" id="${eid}">${m.explanation}</div>
+        </td>
+        ${sorted.map(r => `<td class="center">${statusBadge(r[key], m)}</td>`).join('')}
+        <td class="ideal-range">${m.idealMin}–${m.idealMax}${m.unit}</td>
+      </tr>`;
+    });
+  });
+  labHTML += '</tbody>';
+  document.getElementById('lab-table').innerHTML = labHTML;
+  showPage('customer');
+}
+
+function toggleExplain(id) {
+  const el = document.getElementById(id);
+  const btn = el.previousElementSibling;
+  if (el.style.display === 'block') {
+    el.style.display = 'none';
+    btn.textContent = 'what is this? ▼';
+  } else {
+    el.style.display = 'block';
+    btn.textContent = 'hide ▲';
+  }
+}
+
+// ---- BADGES ----
+function statusBadge(value, m) {
+  if (value == null || value === '') return '<span class="badge-gray">—</span>';
+  const v = parseFloat(value);
+  if (isNaN(v)) return '<span class="badge-gray">—</span>';
+  const cls = v >= m.idealMin && v <= m.idealMax ? 'badge-green' : v < m.idealMin ? 'badge-red' : 'badge-orange';
+  return `<span class="badge ${cls}">${value}${m.unit}</span>`;
+}
+
+function recBadge(val) {
+  if (!val) return '<span class="badge-gray">—</span>';
+  const isNone = String(val).toLowerCase() === 'none' || val === '0';
+  return `<span class="badge ${isNone ? 'badge-green' : 'badge-orange'}">${isNone ? 'None' : val + ' lb/1000ft²'}</span>`;
+}
+
+// ---- ADD SAMPLE ----
+function buildLabFields() {
+  const container = document.getElementById('lab-fields');
+  container.innerHTML = METRICS.map(m => `
+    <div class="form-group">
+      <label class="form-label">${m.label}${m.unit ? ' (' + m.unit + ')' : ''}</label>
+      <input class="form-input" id="f-${m.key}" type="number" step="0.01" placeholder="${m.idealMin}–${m.idealMax}">
+    </div>`).join('');
+}
+
+function populateCustomerDropdowns() {
+  const dl = document.getElementById('customer-datalist');
+  dl.innerHTML = customers.map(c => `<option value="${c.Name}">`).join('');
+  const sel = document.getElementById('report-customer-select');
+  sel.innerHTML = '<option value="">-- Select a customer --</option>' +
+    customers.map(c => `<option value="${c.Name}">${c.Name}</option>`).join('');
+}
+
+function toggleNewCustomer() {
+  const f = document.getElementById('new-customer-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+async function saveCustomer() {
+  const name = document.getElementById('nc-name').value.trim();
+  if (!name) { notify('Please enter a customer name.', 'error'); return; }
+  const row = [Date.now(), name,
+    document.getElementById('nc-address').value,
+    document.getElementById('nc-city').value,
+    '', '', 
+    document.getElementById('nc-email').value,
+    document.getElementById('nc-phone').value,
+    document.getElementById('nc-field').value,
+    ''
+  ];
+  try {
+    await saveToSheet('Customers', row);
+    notify('Customer saved!');
+    document.getElementById('new-customer-form').style.display = 'none';
+    ['nc-name','nc-email','nc-phone','nc-field','nc-address','nc-city'].forEach(id => document.getElementById(id).value = '');
+    await loadData();
+  } catch { notify('Could not save customer.', 'error'); }
+}
+
+async function saveSample() {
+  const customer = document.getElementById('f-customer').value.trim();
+  if (!customer) { notify('Please enter a customer name.', 'error'); return; }
+  const row = [
+    Date.now(), customer,
+    document.getElementById('f-field').value,
+    document.getElementById('f-year').value,
+    document.getElementById('f-pH').value,
+    document.getElementById('f-Phosphorus').value,
+    document.getElementById('f-OrganicMatter').value,
+    document.getElementById('f-Acidity').value,
+    document.getElementById('f-Potassium').value,
+    document.getElementById('f-Magnesium').value,
+    document.getElementById('f-Calcium').value,
+    document.getElementById('f-CEC').value,
+    document.getElementById('f-SatK').value,
+    document.getElementById('f-SatMg').value,
+    document.getElementById('f-SatCa').value,
+    document.getElementById('f-limestone').value,
+    document.getElementById('f-recN').value || 'None',
+    document.getElementById('f-recP').value || 'None',
+    document.getElementById('f-recK').value || 'None',
+    new Date().toLocaleDateString()
+  ];
+  try {
+    await saveToSheet('Samples', row);
+    notify('Sample saved to Google Sheets!');
+    METRICS.forEach(m => document.getElementById('f-' + m.key).value = '');
+    document.getElementById('f-customer').value = '';
+    document.getElementById('f-field').value = '';
+    document.getElementById('f-limestone').value = 'None';
+    document.getElementById('f-recN').value = '';
+    document.getElementById('f-recP').value = '';
+    document.getElementById('f-recK').value = '';
+    await loadData();
+    showPage('dashboard');
+  } catch { notify('Could not save. Check connection.', 'error'); }
+}
+
+// ---- PHOTO / AI EXTRACTION ----
+async function handlePhoto(file) {
+  if (!file) return;
+  const zone = document.getElementById('upload-zone');
+  const text = document.getElementById('upload-text');
+  zone.classList.add('active');
+  text.textContent = '🤖 Reading your report...';
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result.split(',')[1];
+    document.getElementById('upload-preview-wrap').innerHTML = `<img src="${e.target.result}" class="upload-preview">`;
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: [
+            { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64 } },
+            { type: 'text', text: 'Extract all values from this Penn State soil test report. Return ONLY valid JSON with these exact keys: {"CustomerName":null,"Field":null,"Year":null,"pH":null,"Phosphorus":null,"OrganicMatter":null,"Acidity":null,"Potassium":null,"Magnesium":null,"Calcium":null,"CEC":null,"SatK":null,"SatMg":null,"SatCa":null,"LimestoneLbs":null,"RecN":null,"RecP":null,"RecK":null}. CustomerName from SOIL TEST REPORT FOR. Field from FIELD ID. Year 4-digit from DATE. LimestoneLbs use None if none needed. RecN RecP RecK as written on report e.g. 1 to 4 or None.' }
+          ]}]
+        })
+      });
+      const data = await res.json();
+      const txt = data.content?.map(c => c.text || '').join('') || '{}';
+      const parsed = JSON.parse(txt.replace(/```json|```/g,'').trim());
+      if (parsed.CustomerName) document.getElementById('f-customer').value = parsed.CustomerName;
+      if (parsed.Field) document.getElementById('f-field').value = parsed.Field;
+      if (parsed.Year) document.getElementById('f-year').value = parsed.Year;
+      if (parsed.LimestoneLbs) document.getElementById('f-limestone').value = parsed.LimestoneLbs;
+      if (parsed.RecN) document.getElementById('f-recN').value = parsed.RecN;
+      if (parsed.RecP) document.getElementById('f-recP').value = parsed.RecP;
+      if (parsed.RecK) document.getElementById('f-recK').value = parsed.RecK;
+      METRICS.forEach(m => { if (parsed[m.key] != null) document.getElementById('f-' + m.key).value = parsed[m.key]; });
+      notify('Data extracted! Review and save below.');
+    } catch { notify('Could not extract. Fill in manually.', 'error'); }
+    text.textContent = 'Tap to upload another photo';
+    zone.classList.remove('active');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ---- REPORT ----
+function renderReport() {
+  const name = document.getElementById('report-customer-select').value;
+  const output = document.getElementById('report-output');
+  if (!name) { output.innerHTML = ''; return; }
+  const customer = customers.find(c => c.Name === name);
+  const sorted = samples.filter(s => s.CustomerName === name).sort((a,b) => a.Year - b.Year);
+  if (!customer || sorted.length === 0) { output.innerHTML = `<div class="card" style="color:#78716c;font-family:sans-serif">No samples found for ${name}.</div>`; return; }
+  selectedCustomer = customer;
+
+  const recRows = [
+    { key: 'LimestoneLbs', label: 'Limestone (lb/1000 ft²)' },
+    { key: 'RecN', label: 'Nitrogen (N)' },
+    { key: 'RecP', label: 'Phosphorus (P₂O₅)' },
+    { key: 'RecK', label: 'Potassium (K₂O)' },
+  ];
+
+  output.innerHTML = `
+  <div class="report-paper">
+    <div class="report-header">
+      <div>
+        <div class="report-logo">
+          <span>LAWNS</span>
+          <span>PLANTS</span>
+          <span>&amp; PESTS</span>
+        </div>
+        <div style="font-size:11px;color:#666;margin-top:6px">Soil Health Report</div>
+      </div>
+      <div class="report-customer">
+        <div class="report-customer-name">${customer.Name}</div>
+        <div class="report-customer-sub">${customer.Field || ''}</div>
+        <div class="report-customer-sub">${customer.Address || ''}${customer.City ? ', ' + customer.City : ''}</div>
+        <div class="report-customer-sub" style="margin-top:4px;color:#999">Generated: ${new Date().toLocaleDateString()}</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="report-section-title">Limestone & Nutrient Recommendations</div>
+      <table class="report-table">
+        <thead><tr>
+          <th>Item</th>
+          ${sorted.map(r => `<th class="center">${r.Year}</th>`).join('')}
+        </tr></thead>
+        <tbody>${recRows.map(row => `<tr>
+          <td style="font-weight:600">${row.label}</td>
+          ${sorted.map(r => {
+            const isNone = !r[row.key] || String(r[row.key]).toLowerCase() === 'none';
+            return `<td class="center" style="color:${isNone ? '#16a34a' : '#d97706'}">${r[row.key] || 'None'}</td>`;
+          }).join('')}
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+
+    <div>
+      <div class="report-section-title">Soil Test Results</div>
+      <table class="report-table">
+        <thead><tr>
+          <th>Metric</th>
+          <th>Ideal Range</th>
+          ${sorted.map(r => `<th class="center">${r.Year}</th>`).join('')}
+        </tr></thead>
+        <tbody>${METRICS.map(m => `<tr>
+          <td style="font-weight:600">${m.label}</td>
+          <td style="color:#666;font-family:monospace;font-size:11px">${m.idealMin}–${m.idealMax}${m.unit}</td>
+          ${sorted.map(r => {
+            const v = parseFloat(r[m.key]);
+            const color = isNaN(v) ? '#999' : v >= m.idealMin && v <= m.idealMax ? '#16a34a' : v < m.idealMin ? '#dc2626' : '#d97706';
+            return `<td class="center" style="color:${color}">${r[m.key] || '—'}</td>`;
+          }).join('')}
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>
+
+    <div class="report-footer">
+      <div class="report-footer-legend">🟢 Optimal &nbsp; 🟠 Above optimal &nbsp; 🔴 Below optimal</div>
+      <div class="report-footer-brand">Lawns Plants & Pests LLC</div>
+    </div>
+  </div>`;
+}
+
+// ---- NOTIFY ----
+function notify(msg, type = 'success') {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.className = 'notification ' + type;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3500);
+}
+
+// ---- INIT ----
+buildLabFields();
+loadData();
+</script>
+</body>
+</html>
