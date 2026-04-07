@@ -176,7 +176,7 @@
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
           <div id="upload-preview-wrap"><div class="upload-icon">📸</div></div>
           <div class="upload-text" id="upload-text">Tap to photograph a Penn State soil report</div>
-          <div class="upload-sub">AI extracts all values automatically — free via Google</div>
+          <div class="upload-sub" id="upload-sub">AI extracts all values automatically — free via Google</div>
         </div>
       </div>
       <div class="card">
@@ -276,17 +276,17 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4DFO_qHZkzBO_a4LH0CZ-vPJU8tG4mfFoFUYQrBgepRkmXflDcvWF4b1IVPJuHOtAxA/exec';
 
 const METRICS = [
-  { key: 'pH', label: 'Soil pH', unit: '', idealMin: 6.0, idealMax: 7.0, section: 'Lab Results', explanation: 'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0. Below 6.0, phosphorus and calcium become less available.' },
-  { key: 'Phosphorus', label: 'Phosphorus (P)', unit: 'lb/A', idealMin: 50, idealMax: 100, section: 'Lab Results', explanation: 'Drives root development and early establishment. Measured in pounds per acre using Mehlich 3 extraction. High levels can interfere with zinc and iron uptake.' },
-  { key: 'OrganicMatter', label: 'Organic Matter', unit: '%', idealMin: 3, idealMax: 6, section: 'Lab Results', explanation: 'Improves water retention, feeds soil biology, and buffers pH swings. Even 0.1% gain per year is meaningful progress.' },
-  { key: 'Acidity', label: 'Buffer Acidity', unit: 'meq/100g', idealMin: 0, idealMax: 2, section: 'Exchangeable Cations', explanation: 'Reserve acidity held by hydrogen and aluminum ions. Higher values mean more limestone is needed to raise pH.' },
-  { key: 'Potassium', label: 'Potassium (K)', unit: 'meq/100g', idealMin: 0.15, idealMax: 0.40, section: 'Exchangeable Cations', explanation: 'Essential for water regulation, disease resistance, and winter hardiness. Low K leads to poor drought tolerance.' },
+  { key: 'pH', label: 'Soil pH', unit: '', idealMin: 6.0, idealMax: 7.0, section: 'Lab Results', explanation: 'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0.' },
+  { key: 'Phosphorus', label: 'Phosphorus (P)', unit: 'lb/A', idealMin: 50, idealMax: 100, section: 'Lab Results', explanation: 'Drives root development and early establishment. High levels can interfere with zinc and iron uptake.' },
+  { key: 'OrganicMatter', label: 'Organic Matter', unit: '%', idealMin: 3, idealMax: 6, section: 'Lab Results', explanation: 'Improves water retention, feeds soil biology, and buffers pH swings. Even 0.1% gain per year is meaningful.' },
+  { key: 'Acidity', label: 'Buffer Acidity', unit: 'meq/100g', idealMin: 0, idealMax: 2, section: 'Exchangeable Cations', explanation: 'Reserve acidity in soil. Higher values mean more limestone is needed to raise pH.' },
+  { key: 'Potassium', label: 'Potassium (K)', unit: 'meq/100g', idealMin: 0.15, idealMax: 0.40, section: 'Exchangeable Cations', explanation: 'Essential for water regulation, disease resistance, and winter hardiness.' },
   { key: 'Magnesium', label: 'Magnesium (Mg)', unit: 'meq/100g', idealMin: 0.5, idealMax: 2.5, section: 'Exchangeable Cations', explanation: 'The central atom in every chlorophyll molecule. Plants cannot photosynthesize without it.' },
-  { key: 'Calcium', label: 'Calcium (Ca)', unit: 'meq/100g', idealMin: 5, idealMax: 15, section: 'Exchangeable Cations', explanation: 'Builds strong cell walls and improves soil structure. Primary component of agricultural limestone.' },
-  { key: 'CEC', label: 'CEC', unit: 'meq/100g', idealMin: 10, idealMax: 20, section: 'Exchangeable Cations', explanation: 'Cation Exchange Capacity — total ability of soil to hold nutrient ions. Higher means more nutrient-holding capacity and less leaching risk.' },
-  { key: 'SatK', label: 'K Saturation', unit: '%', idealMin: 2, idealMax: 5, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by potassium. Too high blocks magnesium and calcium uptake.' },
-  { key: 'SatMg', label: 'Mg Saturation', unit: '%', idealMin: 10, idealMax: 20, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by magnesium. Low Mg saturation causes chlorophyll deficiency.' },
-  { key: 'SatCa', label: 'Ca Saturation', unit: '%', idealMin: 60, idealMax: 80, section: '% Saturation of CEC', explanation: 'Percentage of CEC sites occupied by calcium. Low Ca usually signals an acidic soil needing lime.' },
+  { key: 'Calcium', label: 'Calcium (Ca)', unit: 'meq/100g', idealMin: 5, idealMax: 15, section: 'Exchangeable Cations', explanation: 'Builds strong cell walls and improves soil structure. Primary component of limestone.' },
+  { key: 'CEC', label: 'CEC', unit: 'meq/100g', idealMin: 10, idealMax: 20, section: 'Exchangeable Cations', explanation: 'Total ability of soil to hold nutrient ions. Higher means less leaching risk.' },
+  { key: 'SatK', label: 'K Saturation', unit: '%', idealMin: 2, idealMax: 5, section: '% Saturation of CEC', explanation: 'Percentage of CEC occupied by potassium. Too high blocks magnesium and calcium uptake.' },
+  { key: 'SatMg', label: 'Mg Saturation', unit: '%', idealMin: 10, idealMax: 20, section: '% Saturation of CEC', explanation: 'Percentage of CEC occupied by magnesium. Low levels cause chlorophyll deficiency.' },
+  { key: 'SatCa', label: 'Ca Saturation', unit: '%', idealMin: 60, idealMax: 80, section: '% Saturation of CEC', explanation: 'Percentage of CEC occupied by calcium. Low Ca usually signals acidic soil needing lime.' },
 ];
 
 const LAB_SECTIONS = {
@@ -299,6 +299,32 @@ let customers = [];
 let samples = [];
 let selectedCustomer = null;
 
+// ---- COMPRESS IMAGE ----
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX = 1200;
+        let w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+          else { w = Math.round(w * MAX / h); h = MAX; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const compressed = canvas.toDataURL('image/jpeg', 0.7);
+        resolve(compressed);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 // ---- DATA ----
 async function loadData() {
   try {
@@ -308,11 +334,11 @@ async function loadData() {
     ]);
     const cData = await cRes.json();
     const sData = await sRes.json();
-    if (cData.length > 1) {
+    if (Array.isArray(cData) && cData.length > 1) {
       const [ch, ...crows] = cData;
       customers = crows.map(r => Object.fromEntries(ch.map((h,i) => [h, r[i]||''])));
     }
-    if (sData.length > 1) {
+    if (Array.isArray(sData) && sData.length > 1) {
       const [sh, ...srows] = sData;
       samples = srows.map(r => Object.fromEntries(sh.map((h,i) => [h, r[i]||''])));
     }
@@ -490,7 +516,7 @@ async function saveCustomer() {
   ];
   try {
     await saveToSheet('Customers', row);
-    notify('Customer saved! Refreshing in a moment...');
+    notify('Customer saved! Refreshing...');
     ['nc-name','nc-email','nc-phone','nc-field','nc-address','nc-city'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('new-customer-form').style.display = 'none';
     setTimeout(loadData, 2000);
@@ -533,29 +559,39 @@ async function saveSample() {
   } catch { notify('Could not save. Check connection.', 'error'); }
 }
 
-// ---- PHOTO / GEMINI ----
+// ---- PHOTO UPLOAD WITH COMPRESSION ----
 async function handlePhoto(file) {
   if (!file) return;
   const zone = document.getElementById('upload-zone');
   const text = document.getElementById('upload-text');
+  const sub = document.getElementById('upload-sub');
   zone.classList.add('active');
-  text.textContent = '🤖 Reading your report via Google AI...';
+  text.textContent = '⏳ Compressing image...';
+  sub.textContent = '';
 
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = e.target.result.split(',')[1];
-    document.getElementById('upload-preview-wrap').innerHTML = `<img src="${e.target.result}" class="upload-preview">`;
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'extract',
-          imageBase64: base64,
-          mimeType: file.type || 'image/jpeg'
-        })
-      });
-      const parsed = await res.json();
+  try {
+    const compressed = await compressImage(file);
+    document.getElementById('upload-preview-wrap').innerHTML = `<img src="${compressed}" class="upload-preview">`;
+    text.textContent = '🤖 Reading your report via Google AI...';
+
+    const base64 = compressed.split(',')[1];
+    const mimeType = 'image/jpeg';
+
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'extract',
+        imageBase64: base64,
+        mimeType: mimeType
+      })
+    });
+
+    const parsed = await res.json();
+
+    if (parsed.error) {
+      notify('Extraction error: ' + parsed.error, 'error');
+    } else {
       if (parsed.CustomerName) document.getElementById('f-customer').value = parsed.CustomerName;
       if (parsed.Field) document.getElementById('f-field').value = parsed.Field;
       if (parsed.Year) document.getElementById('f-year').value = parsed.Year;
@@ -565,13 +601,14 @@ async function handlePhoto(file) {
       if (parsed.RecK) document.getElementById('f-recK').value = parsed.RecK;
       METRICS.forEach(m => { if (parsed[m.key] != null) document.getElementById('f-'+m.key).value = parsed[m.key]; });
       notify('Data extracted! Review and save below.');
-    } catch(err) {
-      notify('Could not extract. Please fill in manually.', 'error');
     }
-    text.textContent = 'Tap to upload another photo';
-    zone.classList.remove('active');
-  };
-  reader.readAsDataURL(file);
+  } catch(err) {
+    notify('Could not extract: ' + err.message, 'error');
+  }
+
+  text.textContent = 'Tap to upload another photo';
+  sub.textContent = 'AI extracts all values automatically';
+  zone.classList.remove('active');
 }
 
 // ---- REPORT ----
