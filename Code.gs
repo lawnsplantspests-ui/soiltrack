@@ -6,23 +6,28 @@ function getSheet(name) {
 }
 
 function doGet(e) {
-  if (!e.parameter.action) {
-    return HtmlService.createHtmlOutputFromFile('Index')
-      .setTitle('SoilTrack - Lawns Plants & Pests')
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  if (e.parameter.sheet) {
+    try {
+      const sheet = getSheet(e.parameter.sheet);
+      if (!sheet) return respond({ error: 'Sheet not found: ' + e.parameter.sheet });
+      return respond(sheet.getDataRange().getValues());
+    } catch(err) {
+      return respond({ error: err.toString() });
+    }
   }
-  try {
-    const sheet = getSheet(e.parameter.sheet);
-    if (!sheet) return respond({ error: 'Sheet not found: ' + e.parameter.sheet });
-    return respond(sheet.getDataRange().getValues());
-  } catch(err) {
-    return respond({ error: err.toString() });
-  }
+  return HtmlService.createHtmlOutputFromFile('Index')
+    .setTitle('SoilTrack - Lawns Plants & Pests')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    let data;
+    if (e.postData && e.postData.type === 'application/json') {
+      data = JSON.parse(e.postData.contents);
+    } else {
+      data = e.parameter;
+    }
     if (data.action === 'extract') {
       const extracted = extractSoilData(data.imageBase64, data.mimeType);
       getOrCreateCustomer(extracted.CustomerName);
@@ -30,6 +35,7 @@ function doPost(e) {
       return respond({ success: true, data: extracted });
     }
     if (data.action === 'save') {
+      if (typeof data.row === 'string') data.row = JSON.parse(data.row);
       const sheet = getSheet(data.sheet);
       if (!sheet) return respond({ error: 'Sheet not found: ' + data.sheet });
       sheet.appendRow(data.row);
