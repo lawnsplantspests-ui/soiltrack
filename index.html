@@ -298,54 +298,16 @@ let samples = [];
 let selectedCustomer = null;
 let extractCallback = null;
 
-// ---- CORS-FREE EXTRACTION via hidden form + polling ----
-function extractWithForm(base64, mimeType) {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => reject(new Error('Timed out waiting for response')), 30000);
-
-    // Create a hidden form that posts to Apps Script
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SCRIPT_URL;
-    form.target = 'extract-frame';
-    form.style.display = 'none';
-
-    const addField = (name, value) => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = name;
-      input.value = value;
-      form.appendChild(input);
-    };
-
-    addField('action', 'extract');
-    addField('imageBase64', base64);
-    addField('mimeType', mimeType);
-
-    document.body.appendChild(form);
-
-    // Create iframe to capture response
-    const iframe = document.createElement('iframe');
-    iframe.name = 'extract-frame';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-
-    iframe.onload = () => {
-      clearTimeout(timeout);
-      try {
-        const text = iframe.contentDocument.body.innerText;
-        const parsed = JSON.parse(text);
-        resolve(parsed);
-      } catch(e) {
-        reject(new Error('Could not parse response'));
-      } finally {
-        document.body.removeChild(form);
-        document.body.removeChild(iframe);
-      }
-    };
-
-    form.submit();
+// ---- EXTRACT via Apps Script + Gemini ----
+async function extractWithForm(base64, mimeType) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'extract', imageBase64: base64, mimeType: mimeType }),
   });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data.data || data;
 }
 
 // ---- COMPRESS IMAGE ----

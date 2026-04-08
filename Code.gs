@@ -23,9 +23,9 @@ function doGet(e) {
 function doPost(e) {
   try {
     let data;
-    if (e.postData && e.postData.type === 'application/json') {
+    try {
       data = JSON.parse(e.postData.contents);
-    } else {
+    } catch(_) {
       data = e.parameter;
     }
     if (data.action === 'extract') {

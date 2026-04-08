@@ -599,21 +599,14 @@ async function handlePhoto(file) {
     const base64 = e.target.result.split(',')[1];
     document.getElementById('upload-preview-wrap').innerHTML = `<img src="${e.target.result}" class="upload-preview">`;
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: [
-            { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64 } },
-            { type: 'text', text: 'Extract all values from this Penn State soil test report. Return ONLY valid JSON with these exact keys: {"CustomerName":null,"Field":null,"Year":null,"pH":null,"Phosphorus":null,"OrganicMatter":null,"Acidity":null,"Potassium":null,"Magnesium":null,"Calcium":null,"CEC":null,"SatK":null,"SatMg":null,"SatCa":null,"LimestoneLbs":null,"RecN":null,"RecP":null,"RecK":null}. CustomerName from SOIL TEST REPORT FOR. Field from FIELD ID. Year 4-digit from DATE. LimestoneLbs use None if none needed. RecN RecP RecK as written on report e.g. 1 to 4 or None.' }
-          ]}]
-        })
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'extract', imageBase64: base64, mimeType: file.type || 'image/jpeg' }),
       });
-      const data = await res.json();
-      const txt = data.content?.map(c => c.text || '').join('') || '{}';
-      const parsed = JSON.parse(txt.replace(/```json|```/g,'').trim());
+      const result = await res.json();
+      if (result.error) throw new Error(result.error);
+      const parsed = result.data || result;
       if (parsed.CustomerName) document.getElementById('f-customer').value = parsed.CustomerName;
       if (parsed.Field) document.getElementById('f-field').value = parsed.Field;
       if (parsed.Year) document.getElementById('f-year').value = parsed.Year;
