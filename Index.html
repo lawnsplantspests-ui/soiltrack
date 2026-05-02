@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>SoilTrack - Lawns Plants & Pests</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0c0c0c; color: #e7e5e4; font-family: Georgia, serif; min-height: 100vh; }
+
+  /* ── Header & Nav ── */
+  .header { background: #111; border-bottom: 1px solid #292524; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #4ade80, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .logo-text { font-size: 17px; font-weight: 700; color: #f5f5f4; }
+  .logo-sub { font-size: 10px; color: #78716c; font-family: monospace; }
+  .nav { display: flex; gap: 4px; }
+  .nav-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; color: #a8a29e; font-family: sans-serif; white-space: nowrap; }
+  .nav-btn.active { background: #4ade8022; color: #4ade80; }
+
+  /* ── Layout ── */
+  .main { padding: 20px 16px; max-width: 900px; margin: 0 auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── Cards ── */
+  .card { background: #161616; border: 1px solid #222; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .sec-title { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #57534e; margin-bottom: 12px; font-family: sans-serif; }
+  .sub-head { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4ade8077; margin: 16px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #1f1f1f; font-family: sans-serif; }
+
+  /* ── Stats ── */
+  .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .stat-card { background: #161616; border: 1px solid #222; border-radius: 10px; padding: 14px; }
+  .stat-icon { font-size: 22px; margin-bottom: 4px; }
+  .stat-val { font-size: 28px; font-weight: 900; color: #4ade80; font-family: Georgia, serif; }
+  .stat-label { font-size: 11px; color: #78716c; font-family: sans-serif; }
+
+  /* ── Buttons ── */
+  .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
+  .btn-green:hover { opacity: 0.9; }
+  .btn-outline { background: transparent; border: 1px solid #292524; border-radius: 6px; color: #a8a29e; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: sans-serif; }
+  .btn-danger { background: #7f1d1d33; border: 1px solid #f8717133; border-radius: 6px; color: #f87171; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: sans-serif; }
+  .btn-full { width: 100%; margin-top: 8px; padding: 11px 0; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+  /* ── Forms ── */
+  .form-group { margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: #78716c; margin-bottom: 3px; display: block; font-family: sans-serif; }
+  .form-input { width: 100%; background: #1a1a1a; border: 1px solid #292524; border-radius: 6px; padding: 8px 12px; color: #e7e5e4; font-size: 13px; font-family: monospace; }
+  .form-input:focus { outline: none; border-color: #4ade8055; }
+  select.form-input { cursor: pointer; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  /* ── Customer List ── */
+  .search-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #161616; border: 1px solid #222; border-radius: 10px; margin-bottom: 14px; }
+  .search-bar input { flex: 1; border: none; outline: none; font-size: 14px; background: transparent; color: #e7e5e4; font-family: sans-serif; }
+  .customer-row { padding: 10px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; transition: all 0.15s; }
+  .customer-row:hover { background: #1a1a1a; border-color: #2a2a2a; }
+  .customer-name { font-weight: 700; color: #f5f5f4; font-size: 15px; }
+  .customer-sub { font-size: 11px; color: #78716c; font-family: sans-serif; margin-top: 2px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: 700; font-family: monospace; }
+  .badge-green { background: #4ade8018; color: #4ade80; border: 1px solid #4ade8033; }
+  .badge-red { background: #f8717118; color: #f87171; border: 1px solid #f8717133; }
+  .badge-orange { background: #fb923c18; color: #fb923c; border: 1px solid #fb923c33; }
+  .badge-gray { color: #57534e; }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 6px 10px; font-weight: 600; border-bottom: 1px solid #222; font-family: sans-serif; font-size: 11px; color: #57534e; text-align: left; }
+  th.year-col { text-align: center; color: #a8a29e; font-family: monospace; font-size: 13px; }
+  td { padding: 7px 10px; border-bottom: 1px solid #161616; }
+  td.center { text-align: center; }
+  .section-row td { padding: 10px 10px 4px; color: #4ade8077; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-family: sans-serif; border-bottom: 1px solid #1e1e1e; }
+  .metric-label { font-weight: 600; color: #d6d3d1; font-family: sans-serif; font-size: 13px; }
+  .ideal-range { color: #57534e; font-size: 11px; font-family: monospace; white-space: nowrap; }
+
+  /* ── Score Card ── */
+  .score-card { display: flex; align-items: center; gap: 10px; background: #111; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
+  .score-pct { font-size: 34px; font-weight: 900; font-family: Georgia, serif; line-height: 1; }
+  .score-label { color: #d6d3d1; font-weight: 700; font-size: 13px; font-family: sans-serif; }
+  .score-sub { color: #78716c; font-size: 11px; font-family: sans-serif; }
+
+  /* ── Scan Options ── */
+  .scan-option { display: flex; align-items: center; gap: 14px; padding: 18px; background: #161616; border: 1px solid #222; border-radius: 12px; cursor: pointer; margin-bottom: 12px; transition: all 0.15s; }
+  .scan-option:hover { border-color: #4ade8055; }
+  .scan-option.primary { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; border-color: #16a34a; }
+  .scan-option .icon { font-size: 28px; flex-shrink: 0; }
+  .scan-option .title { font-size: 16px; font-weight: 700; margin-bottom: 3px; font-family: sans-serif; }
+  .scan-option .desc { font-size: 13px; opacity: 0.7; line-height: 1.4; font-family: sans-serif; }
+
+  /* ── Info Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+  .modal-overlay.visible { display: flex; }
+  .modal { background: #1a1a1a; border: 1px solid #333; border-radius: 16px 16px 0 0; padding: 24px; width: 100%; max-width: 500px; max-height: 70vh; overflow-y: auto; }
+  .modal h2 { font-size: 18px; font-weight: 700; color: #f5f5f4; margin-bottom: 4px; }
+  .modal-range { font-size: 12px; color: #4ade80; margin-bottom: 14px; font-family: monospace; }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; margin-bottom: 4px; font-family: sans-serif; }
+  .modal-body { font-size: 14px; line-height: 1.6; color: #a8a29e; }
+  .modal-close { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #78716c; }
+
+  /* ── Notification ── */
+  .notification { position: fixed; top: 16px; left: 16px; right: 16px; border-radius: 8px; padding: 12px 18px; font-size: 13px; font-weight: 600; z-index: 999; box-shadow: 0 8px 32px #00000088; font-family: sans-serif; display: none; }
+  .notification.success { background: #14532d; border: 1px solid #4ade80; color: #bbf7d0; }
+  .notification.error { background: #7f1d1d; border: 1px solid #f87171; color: #fca5a5; }
+
+  /* ── Report (Print) ── */
+  .report-paper { background: white; color: #1a1a1a; border-radius: 12px; padding: 32px; font-family: sans-serif; }
+  .report-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 3px solid #2d5a1b; padding-bottom: 16px; }
+  .report-logo { font-size: 20px; font-weight: 900; color: #2d5a1b; letter-spacing: -1px; line-height: 1.1; }
+  .report-logo span { display: block; }
+  .report-customer { text-align: right; }
+  .report-customer-name { font-size: 18px; font-weight: 700; color: #2d5a1b; }
+  .report-customer-sub { font-size: 12px; color: #666; margin-top: 3px; }
+  .report-section-title { font-size: 12px; font-weight: 700; color: #2d5a1b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .report-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 20px; }
+  .report-table th { background: #f0f7ee; padding: 7px 10px; text-align: left; color: #2d5a1b; font-weight: 600; }
+  .report-table th.center { text-align: center; }
+  .report-table td { padding: 7px 10px; border-bottom: 1px solid #eee; }
+  .report-table td.center { text-align: center; font-weight: 700; font-family: monospace; }
+  .report-table tr:nth-child(even) td { background: #f9f9f9; }
+  .report-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+
+  /* ── Loading & Empty ── */
+  .loading { text-align: center; padding: 60px; color: #78716c; font-family: sans-serif; }
+  .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #333; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { text-align: center; padding: 40px 20px; color: #78716c; font-family: sans-serif; }
+  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+
+  /* ── Print ── */
+  @media print {
+    .header, .no-print { display: none !important; }
+    body { background: white; }
+    .main { padding: 0; }
+    .report-paper { border-radius: 0; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .nav-btn { padding: 6px 8px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notification" id="notification"></div>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🌱</div>
+    <div>
+      <div class="logo-text">SoilTrack</div>
+      <div class="logo-sub">Lawns Plants & Pests LLC</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('dashboard')">Dashboard</button>
+    <button class="nav-btn" onclick="showTab('add')">+ Add</button>
+    <button class="nav-btn" onclick="showTab('report')">Reports</button>
+  </div>
+</div>
+
+<div class="main" id="content">
+  <div class="loading"><div class="spinner"></div><p style="margin-top:12px">Loading...</p></div>
+</div>
+
+<!-- Info Modal -->
+<div class="modal-overlay" id="info-modal" onclick="closeModal(event)">
+  <div class="modal" id="info-modal-body"></div>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" accept="image/*" id="file-input" style="display:none" onchange="handleFileUpload(event)">
+<input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none" onchange="handleFileUpload(event)">
+
+<script>
+// ══════════════════════════════════════════════════════
+// State
+// ══════════════════════════════════════════════════════
+var customers = [];
+var samples = [];
+var currentView = 'dashboard';
+var selectedCustomer = null;
+var prefillData = null;
+
+// ══════════════════════════════════════════════════════
+// Metrics (matches Code.gs)
+// ══════════════════════════════════════════════════════
+var METRICS = [
+  { key:'pH', label:'Soil pH', unit:'', min:6.0, max:7.0, section:'Lab Results',
+    desc:'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0.',
+    rec:'If too low, apply limestone. If too high, apply sulfur.' },
+  { key:'phosphorus', label:'Phosphorus (P)', unit:'lb/A', min:50, max:100, section:'Lab Results',
+    desc:'Drives root development and early establishment. High levels can interfere with zinc and iron uptake.',
+    rec:'If deficient, apply phosphate fertilizer. Avoid excess — runoff harms waterways.' },
+  { key:'organicMatter', label:'Organic Matter', unit:'%', min:3, max:6, section:'Lab Results',
+    desc:'Improves water retention, feeds soil biology, and buffers pH swings. Even 0.1% gain per year is meaningful.',
+    rec:'Top-dress with compost, use organic fertilizers, minimize soil disturbance.' },
+  { key:'acidity', label:'Buffer Acidity', unit:'meq/100g', min:0, max:2, section:'Exchangeable Cations',
+    desc:'Reserve acidity in soil. Higher values mean more limestone is needed to raise pH.',
+    rec:'This value determines your limestone application rate.' },
+  { key:'potassium', label:'Potassium (K)', unit:'meq/100g', min:0.15, max:0.40, section:'Exchangeable Cations',
+    desc:'Essential for water regulation, disease resistance, and winter hardiness.',
+    rec:'If deficient, apply potash (K₂O). Important for stress tolerance.' },
+  { key:'magnesium', label:'Magnesium (Mg)', unit:'meq/100g', min:0.5, max:2.5, section:'Exchangeable Cations',
+    desc:'The central atom in every chlorophyll molecule. Plants cannot photosynthesize without it.',
+    rec:'If deficient, apply dolomitic limestone or Epsom salt.' },
+  { key:'calcium', label:'Calcium (Ca)', unit:'meq/100g', min:5, max:15, section:'Exchangeable Cations',
+    desc:'Builds strong cell walls and improves soil structure. Primary component of limestone.',
+    rec:'If deficient, apply calcitic or dolomitic limestone.' },
+  { key:'cec', label:'CEC', unit:'meq/100g', min:10, max:20, section:'Exchangeable Cations', infoOnly:true,
+    desc:'Total ability of soil to hold nutrient ions. Higher means less leaching risk.',
+    rec:'CEC is informational. Improve it by adding organic matter like compost.' },
+  { key:'satK', label:'K Saturation', unit:'%', min:2, max:5, section:'% Saturation of CEC',
+    desc:'Percentage of CEC occupied by potassium. Too high blocks magnesium and calcium uptake.',
+    rec:'If too low, apply potassium. If too high relative to Mg, focus on balancing.' },
+  { key:'satMg', label:'Mg Saturation', unit:'%', min:10, max:20, section:'% Saturation of CEC',
+    desc:'Percentage of CEC occupied by magnesium. Low levels cause chlorophyll deficiency.',
+    rec:'If deficient, apply dolomitic limestone or Epsom salt.' },
+  { key:'satCa', label:'Ca Saturation', unit:'%', min:60, max:80, section:'% Saturation of CEC',
+    desc:'Percentage of CEC occupied by calcium. Low Ca usually signals acidic soil needing lime.',
+    rec:'If deficient, apply limestone. Calcium and pH are closely linked.' }
+];
+
+var LAB_SECTIONS = {
+  'Lab Results': ['pH','phosphorus','organicMatter'],
+  'Exchangeable Cations': ['acidity','potassium','magnesium','calcium','cec'],
+  '% Saturation of CEC': ['satK','satMg','satCa']
+};
+
+var REC_ROWS = [
+  { key:'limestoneLbs', label:'🪨 Limestone', note:'Raises pH. Split if over 100 lb. Aerate first.' },
+  { key:'recN', label:'🌿 Nitrogen (N)', note:'Split into multiple apps through the season.' },
+  { key:'recP', label:'🌱 Phosphorus (P₂O₅)', note:'Only apply what the test recommends.' },
+  { key:'recK', label:'💧 Potassium (K₂O)', note:'Important for winter hardiness.' }
+];
+
+// ══════════════════════════════════════════════════════
+// Init
+// ══════════════════════════════════════════════════════
+window.onload = function() {
+  var timeout = setTimeout(function() {
+    setContent('<div class="card" style="background:#1a1000;border-color:#fb923c;padding:20px;line-height:1.7;font-family:sans-serif">'
+      + '<div style="font-size:16px;font-weight:700;color:#fb923c;margin-bottom:10px">⚠️ Could not connect</div>'
+      + '<p style="font-size:13px;color:#a8a29e;margin-bottom:12px">This is usually an authorization issue. In the Apps Script editor, select <b>testConnection</b> from the function dropdown and click Run. Approve permissions, then refresh this page.</p>'
+      + '<button class="btn-green" onclick="location.reload()">↺ Retry</button></div>');
+  }, 12000);
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      clearTimeout(timeout);
+      if (!result.success) {
+        setContent('<div class="card" style="color:#f87171;font-family:sans-serif;padding:20px">'
+          + '<b>Error:</b> ' + esc(result.error) + '</div>');
+      } else {
+        loadDashboard();
+      }
+    })
+    .withFailureHandler(function(err) {
+      clearTimeout(timeout);
+      setContent('<div class="card" style="color:#f87171;font-family:sans-serif;padding:20px">'
+        + '<b>Script error:</b> ' + esc(err.message || String(err))
+        + '<br><button class="btn-green" style="margin-top:12px" onclick="location.reload()">↺ Retry</button></div>');
+    })
+    .testConnection();
+};
+
+// ══════════════════════════════════════════════════════
+// Data Loading
+// ══════════════════════════════════════════════════════
+function loadDashboard() {
+  setContent('<div class="loading"><div class="spinner"></div><p style="margin-top:12px">Loading...</p></div>');
+  google.script.run
+    .withSuccessHandler(function(data) {
+      customers = data.customers || [];
+      samples = data.samples || [];
+      renderDashboard(data);
+    })
+    .withFailureHandler(function(err) { showError(err); })
+    .getDashboardData();
+}
+
+// ══════════════════════════════════════════════════════
+// Navigation
+// ══════════════════════════════════════════════════════
+function showTab(tab) {
+  currentView = tab;
+  selectedCustomer = null;
+  document.querySelectorAll('.nav-btn').forEach(function(b, i) {
+    b.classList.toggle('active', ['dashboard','add','report'][i] === tab);
+  });
+  if (tab === 'dashboard') loadDashboard();
+  else if (tab === 'add') renderAddSample();
+  else if (tab === 'report') renderReportPage();
+}
+
+function setContent(html) { document.getElementById('content').innerHTML = html; }
+
+// ══════════════════════════════════════════════════════
+// Dashboard
+// ══════════════════════════════════════════════════════
+function renderDashboard(data) {
+  var d = data || {};
+  var html = '<div style="margin-bottom:20px">'
+    + '<div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:4px">Farm Health Overview</div>'
+    + '<div style="color:#78716c;font-size:13px;font-family:sans-serif">'
+    + (d.customerCount||0)+' customers · '+(d.sampleCount||0)+' samples · '+(d.yearsCount||0)+' years of data</div></div>';
+
+  html += '<div class="stats-grid">'
+    + '<div class="stat-card"><div class="stat-icon">👨‍🌾</div><div class="stat-val">'+(d.customerCount||0)+'</div><div class="stat-label">Customers</div></div>'
+    + '<div class="stat-card"><div class="stat-icon">🧪</div><div class="stat-val">'+(d.sampleCount||0)+'</div><div class="stat-label">Total Samples</div></div>'
+    + '<div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">'+(d.yearsCount||0)+'</div><div class="stat-label">Years of Data</div></div>'
+    + '</div>';
+
+  if (d.improvementScore !== null && d.improvementScore !== undefined) {
+    var color = d.improvementScore >= 70 ? '#4ade80' : d.improvementScore >= 40 ? '#fb923c' : '#f87171';
+    html += '<div class="score-card" style="border:1px solid '+color+'33">'
+      + '<div class="score-pct" style="color:'+color+'">'+d.improvementScore+'%</div>'
+      + '<div><div class="score-label">Average Improvement</div><div class="score-sub">Year-over-year soil health trend</div></div></div>';
+  }
+
+  if (d.topIssues && d.topIssues.length > 0) {
+    html += '<div class="card"><div class="sec-title">Common Issues</div>';
+    d.topIssues.forEach(function(issue) {
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e1e1e">'
+        + '<span style="font-family:sans-serif;font-size:13px;color:#d6d3d1">'+esc(issue.label)+'</span>'
+        + '<span class="badge badge-red">'+issue.count+' out of range</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Customer list with search
+  html += '<div class="card"><div class="sec-title">Customers</div>';
+  html += '<div class="search-bar no-print"><span style="color:#57534e">🔍</span><input id="cust-search" placeholder="Search customers..." oninput="filterCustomers()"></div>';
+  html += '<div id="customer-list">';
+  html += renderCustomerList(customers);
+  html += '</div></div>';
+
+  setContent(html);
+}
+
+function renderCustomerList(list) {
+  if (list.length === 0) return '<div class="empty"><div class="empty-icon">🌱</div><div style="font-size:15px;font-weight:700;color:#f5f5f4;margin-bottom:4px">No customers yet</div><div style="font-size:13px">Add your first sample to get started.</div></div>';
+  var html = '';
+  list.forEach(function(c) {
+    var count = samples.filter(function(s){ return s.customerId === c.id; }).length;
+    var yrs = [...new Set(samples.filter(function(s){ return s.customerId === c.id; }).map(function(s){ return s.year; }))].sort().join(', ');
+    html += '<div class="customer-row" onclick="openCustomer(\''+c.id+'\')">'
+      + '<div><div class="customer-name">'+esc(c.name)+'</div>'
+      + '<div class="customer-sub">'+(c.field?esc(c.field)+' · ':'')+count+' sample'+(count!==1?'s':'')+(yrs?' · '+yrs:'')+'</div></div>'
+      + '<div style="color:#78716c;font-size:20px">›</div></div>';
+  });
+  return html;
+}
+
+function filterCustomers() {
+  var q = document.getElementById('cust-search').value.toLowerCase();
+  var filtered = customers.filter(function(c) {
+    return c.name.toLowerCase().includes(q) || (c.field||'').toLowerCase().includes(q);
+  });
+  document.getElementById('customer-list').innerHTML = renderCustomerList(filtered);
+}
+
+// ══════════════════════════════════════════════════════
+// Customer Detail
+// ══════════════════════════════════════════════════════
+function openCustomer(id) {
+  selectedCustomer = customers.find(function(c){ return c.id === id; });
+  if (!selectedCustomer) return;
+  currentView = 'customer';
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+
+  var c = selectedCustomer;
+  var sorted = samples.filter(function(s){ return s.customerId === c.id; }).sort(function(a,b){ return a.year - b.year; });
+
+  // Improvement score
+  var imp = 0, total = 0;
+  if (sorted.length >= 2) {
+    var prev = sorted[sorted.length - 2], curr = sorted[sorted.length - 1];
+    METRICS.forEach(function(m) {
+      if (m.infoOnly) return;
+      var pv = parseFloat(prev[m.key]), cv = parseFloat(curr[m.key]);
+      if (isNaN(pv) || isNaN(cv)) return;
+      total++;
+      var mid = (m.min + m.max) / 2;
+      if (cv >= m.min && cv <= m.max) imp++;
+      else if (!(pv >= m.min && pv <= m.max) && Math.abs(cv - mid) < Math.abs(pv - mid)) imp++;
+    });
+  }
+  var pct = total ? Math.round((imp/total)*100) : 0;
+  var color = pct >= 70 ? '#4ade80' : pct >= 40 ? '#fb923c' : '#f87171';
+
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">'
+    + '<div style="display:flex;align-items:center;gap:12px">'
+    + '<button class="btn-outline" onclick="showTab(\'dashboard\')">← Back</button>'
+    + '<div><div style="font-size:20px;font-weight:700;color:#f5f5f4">'+esc(c.name)+'</div>'
+    + '<div style="font-size:12px;color:#78716c;font-family:sans-serif">'+(c.field?esc(c.field):'')+(c.email?' · '+esc(c.email):'')+(c.phone?' · '+esc(c.phone):'')+'</div></div></div>'
+    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+    + '<button class="btn-green btn-sm" onclick="addSampleFor(\''+c.id+'\')">+ Add Sample</button>'
+    + '<button class="btn-outline btn-sm no-print" onclick="showReportFor(\''+c.id+'\')">📄 Report</button>'
+    + '<button class="btn-danger btn-sm no-print" onclick="deleteCustomer(\''+c.id+'\')">Delete</button>'
+    + '</div></div>';
+
+  if (sorted.length >= 2) {
+    html += '<div class="score-card" style="border:1px solid '+color+'33">'
+      + '<div class="score-pct" style="color:'+color+'">'+pct+'%</div>'
+      + '<div><div class="score-label">Metrics Improving</div><div class="score-sub">'+imp+' of '+total+' nutrients trending up</div></div></div>';
+  }
+
+  // Recommendations table
+  html += '<div class="card"><div class="sec-title">Limestone & Nutrient Recommendations</div><div class="table-wrap"><table>'
+    + '<thead><tr><th>Recommendation</th>';
+  sorted.forEach(function(s){ html += '<th class="year-col">'+s.year+'</th>'; });
+  html += '<th>Notes</th></tr></thead><tbody>';
+  REC_ROWS.forEach(function(row) {
+    html += '<tr><td style="font-weight:600;color:#d6d3d1;white-space:nowrap;font-family:sans-serif;font-size:13px">'+row.label+'</td>';
+    sorted.forEach(function(s) { html += '<td class="center">'+recBadge(s[row.key])+'</td>'; });
+    html += '<td style="color:#78716c;font-size:11px;font-family:sans-serif;max-width:180px;line-height:1.5">'+row.note+'</td></tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  // Lab results table
+  html += '<div class="card"><div class="sec-title">Lab Results — Year over Year</div><div class="table-wrap"><table>';
+  html += '<thead><tr><th>Metric</th>';
+  sorted.forEach(function(s){ html += '<th class="year-col">'+s.year+'</th>'; });
+  html += '<th>Ideal</th></tr></thead><tbody>';
+
+  Object.entries(LAB_SECTIONS).forEach(function(entry) {
+    var section = entry[0], keys = entry[1];
+    html += '<tr class="section-row"><td colspan="'+(sorted.length+2)+'">'+section+'</td></tr>';
+    keys.forEach(function(key) {
+      var m = METRICS.find(function(x){ return x.key === key; });
+      if (!m) return;
+      html += '<tr><td style="min-width:130px"><div class="metric-label">'+m.label+'</div>'
+        + '<button style="font-size:10px;color:#4ade8066;cursor:pointer;font-family:sans-serif;text-decoration:underline dotted;border:none;background:none;padding:0" onclick="showInfoModal(\''+m.key+'\')">what is this?</button></td>';
+      sorted.forEach(function(s) { html += '<td class="center">'+statusBadge(s[key], m)+'</td>'; });
+      html += '<td class="ideal-range">'+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</td></tr>';
+    });
+  });
+  html += '</tbody></table></div></div>';
+
+  // Sample history with delete
+  html += '<div class="card no-print"><div class="sec-title">Sample History</div>';
+  sorted.slice().reverse().forEach(function(s) {
+    html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1e1e1e">'
+      + '<span style="background:#4ade8018;color:#4ade80;padding:4px 10px;border-radius:6px;font-weight:700;font-size:13px;font-family:monospace">'+s.year+'</span>'
+      + '<span style="flex:1;font-size:12px;color:#78716c;font-family:sans-serif">'+formatDate(s.createdAt)+'</span>'
+      + '<button class="btn-danger btn-sm" onclick="deleteSample(\''+s.id+'\','+s.year+')">Delete</button></div>';
+  });
+  html += '</div>';
+
+  setContent(html);
+}
+
+function addSampleFor(customerId) {
+  prefillData = { customerId: customerId };
+  renderSampleForm();
+}
+
+// ══════════════════════════════════════════════════════
+// Add Sample — Method Selection
+// ══════════════════════════════════════════════════════
+function renderAddSample() {
+  var html = '<div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:20px">Add Soil Sample</div>';
+
+  if (customers.length === 0) {
+    html += '<div class="card" style="border-color:#fb923c33;padding:14px;margin-bottom:16px;color:#fb923c;font-size:13px;font-family:sans-serif">⚠ Add a customer first before recording a sample.</div>';
+  }
+
+  html += '<div class="scan-option primary" onclick="document.getElementById(\'camera-input\').click()">'
+    + '<div class="icon">📷</div><div><div class="title">Scan Report</div>'
+    + '<div class="desc">Photograph a Penn State soil test — AI fills in all values</div></div></div>';
+
+  html += '<div class="scan-option" onclick="document.getElementById(\'file-input\').click()">'
+    + '<div class="icon">🖼</div><div><div class="title">Upload Photo</div>'
+    + '<div class="desc">Choose an existing photo from your device</div></div></div>';
+
+  html += '<div class="scan-option" onclick="prefillData=null;renderSampleForm()">'
+    + '<div class="icon">✏️</div><div><div class="title">Enter Manually</div>'
+    + '<div class="desc">Type in all soil lab values by hand</div></div></div>';
+
+  html += '<div class="card" style="margin-top:16px"><div class="sec-title">Add New Customer</div>'
+    + '<div class="grid-2">'
+    + '<div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="nc-name" placeholder="John Smith"></div>'
+    + '<div class="form-group"><label class="form-label">Field / Property</label><input class="form-input" id="nc-field" placeholder="Front lawn"></div>'
+    + '<div class="form-group"><label class="form-label">Email</label><input class="form-input" id="nc-email" type="email"></div>'
+    + '<div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="nc-phone" type="tel"></div>'
+    + '<div class="form-group"><label class="form-label">Address</label><input class="form-input" id="nc-address"></div>'
+    + '<div class="form-group"><label class="form-label">City</label><input class="form-input" id="nc-city"></div>'
+    + '</div><button class="btn-green btn-full" onclick="saveCustomer()">Save Customer</button></div>';
+
+  setContent(html);
+}
+
+// ══════════════════════════════════════════════════════
+// Photo Upload → Gemini Extraction
+// ══════════════════════════════════════════════════════
+function handleFileUpload(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  event.target.value = '';
+
+  setContent('<div class="loading"><div class="spinner"></div><p style="margin-top:12px;font-size:15px">🤖 Reading soil report...</p><p style="color:#57534e;font-size:12px;margin-top:6px">AI is extracting values from your image</p></div>');
+
+  compressImage(file, function(dataUrl) {
+    var base64 = dataUrl.split(',')[1];
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (result.success && result.data) {
+          prefillData = result.data;
+          prefillData._aiExtracted = true;
+          notify('Data extracted! Review and save below.');
+        } else {
+          notify('Could not extract: ' + (result.error || 'Unknown error'), 'error');
+          prefillData = null;
+        }
+        renderSampleForm();
+      })
+      .withFailureHandler(function(err) {
+        notify('Extraction error: ' + (err.message || err), 'error');
+        prefillData = null;
+        renderSampleForm();
+      })
+      .extractSoilData(base64, file.type || 'image/jpeg');
+  });
+}
+
+function compressImage(file, callback) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 800;
+      var w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.5));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══════════════════════════════════════════════════════
+// Sample Entry Form
+// ══════════════════════════════════════════════════════
+function renderSampleForm() {
+  currentView = 'sample-form';
+  var p = prefillData || {};
+  var selectedCustId = p.customerId || '';
+
+  var html = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">'
+    + '<button class="btn-outline" onclick="showTab(\'add\')">← Back</button>'
+    + '<div style="font-size:20px;font-weight:700;color:#f5f5f4">Add Soil Sample</div></div>';
+
+  if (p._aiExtracted) {
+    html += '<div class="card" style="background:#14532d44;border-color:#4ade8044;color:#4ade80;font-size:13px;font-family:sans-serif;padding:12px">✅ Values extracted from photo — review and confirm below</div>';
+  }
+
+  html += '<div class="card"><div class="sec-title">Details</div>'
+    + '<div class="grid-2">'
+    + '<div class="form-group"><label class="form-label">Customer *</label>'
+    + '<select class="form-input" id="s-customer"><option value="">— Select —</option>';
+  customers.forEach(function(c) {
+    html += '<option value="'+c.id+'"'+(c.id===selectedCustId?' selected':'')+'>'+esc(c.name)+(c.field?' ('+esc(c.field)+')':'')+'</option>';
+  });
+  html += '</select></div>'
+    + '<div class="form-group"><label class="form-label">Year *</label>'
+    + '<input class="form-input" id="s-year" type="number" value="'+(p.Year || new Date().getFullYear())+'"></div></div>';
+
+  if (p.CustomerName && !selectedCustId) {
+    html += '<div style="font-size:12px;color:#fb923c;font-family:sans-serif;margin-top:-4px;margin-bottom:8px">AI found: "'+esc(p.CustomerName)+'" — select matching customer above</div>';
+  }
+  html += '</div>';
+
+  // Limestone & Recs
+  html += '<div class="card"><div class="sec-title">Limestone & Nutrient Recommendations</div>'
+    + '<div class="form-group"><label class="form-label">Limestone (lb/1000 ft²)</label>'
+    + '<select class="form-input" id="s-limestoneLbs"><option value="">None</option>';
+  [25,50,75,100,125,150,175,200,225,250].forEach(function(v) {
+    html += '<option value="'+v+'"'+(String(p.limestoneLbs)===String(v)?' selected':'')+'>'+v+' lb/1000 ft²</option>';
+  });
+  html += '</select></div><div class="grid-3">'
+    + formField('s-recN', 'Nitrogen (N)', p.recN)
+    + formField('s-recP', 'Phosphorus (P₂O₅)', p.recP)
+    + formField('s-recK', 'Potassium (K₂O)', p.recK)
+    + '</div></div>';
+
+  // Lab values
+  html += '<div class="card"><div class="sec-title">Lab Results</div>';
+  Object.entries(LAB_SECTIONS).forEach(function(entry) {
+    html += '<div class="sub-head">'+entry[0]+'</div><div class="grid-2">';
+    entry[1].forEach(function(key) {
+      var m = METRICS.find(function(x){ return x.key === key; });
+      if (!m) return;
+      html += '<div class="form-group"><label class="form-label">'+m.label+(m.unit?' ('+m.unit+')':'')
+        + ' <button style="font-size:10px;color:#4ade8066;cursor:pointer;border:none;background:none;padding:0" onclick="showInfoModal(\''+m.key+'\')">ⓘ</button></label>'
+        + '<input class="form-input" id="s-'+m.key+'" type="number" step="any" placeholder="'+m.min+'–'+m.max+'" value="'+(p[m.key]!=null?p[m.key]:'')+'"></div>';
+    });
+    html += '</div>';
+  });
+  html += '</div>';
+
+  html += '<button class="btn-green btn-full" onclick="saveSampleForm()">💾 Save to Google Sheets</button>';
+  setContent(html);
+}
+
+function formField(id, label, val) {
+  return '<div class="form-group"><label class="form-label">'+label+'</label>'
+    + '<input class="form-input" id="'+id+'" placeholder="None" value="'+(val||'')+'"></div>';
+}
+
+function saveSampleForm() {
+  var custId = document.getElementById('s-customer').value;
+  var year = parseInt(document.getElementById('s-year').value, 10);
+  if (!custId) { notify('Please select a customer.', 'error'); return; }
+  if (isNaN(year)) { notify('Please enter a valid year.', 'error'); return; }
+
+  var data = { customerId: custId, year: year };
+  METRICS.forEach(function(m) {
+    var v = document.getElementById('s-'+m.key).value.trim();
+    data[m.key] = v === '' ? undefined : parseFloat(v);
+  });
+  data.limestoneLbs = document.getElementById('s-limestoneLbs').value || undefined;
+  data.recN = document.getElementById('s-recN').value.trim() || undefined;
+  data.recP = document.getElementById('s-recP').value.trim() || undefined;
+  data.recK = document.getElementById('s-recK').value.trim() || undefined;
+
+  google.script.run
+    .withSuccessHandler(function(result) {
+      data.id = result.id;
+      data.createdAt = new Date().toISOString();
+      samples.push(data);
+      prefillData = null;
+      notify('Sample saved!');
+      if (selectedCustomer) { openCustomer(selectedCustomer.id); }
+      else { showTab('dashboard'); }
+    })
+    .withFailureHandler(function(err) { notify('Could not save: '+(err.message||err), 'error'); })
+    .saveSample(data);
+}
+
+// ══════════════════════════════════════════════════════
+// Save / Delete
+// ══════════════════════════════════════════════════════
+function saveCustomer() {
+  var name = document.getElementById('nc-name').value.trim();
+  if (!name) { notify('Please enter a name.', 'error'); return; }
+  var data = {
+    name: name,
+    field: document.getElementById('nc-field').value.trim(),
+    email: document.getElementById('nc-email').value.trim(),
+    phone: document.getElementById('nc-phone').value.trim(),
+    address: document.getElementById('nc-address').value.trim(),
+    city: document.getElementById('nc-city').value.trim()
+  };
+  google.script.run
+    .withSuccessHandler(function(result) {
+      data.id = result.id;
+      customers.push(data);
+      notify('Customer saved!');
+      ['nc-name','nc-field','nc-email','nc-phone','nc-address','nc-city'].forEach(function(id){ document.getElementById(id).value = ''; });
+    })
+    .withFailureHandler(function(err) { notify('Could not save: '+(err.message||err), 'error'); })
+    .saveCustomer(data);
+}
+
+function deleteCustomer(id) {
+  if (!confirm('Delete this customer and all their samples? This cannot be undone.')) return;
+  google.script.run
+    .withSuccessHandler(function() {
+      customers = customers.filter(function(c){ return c.id !== id; });
+      samples = samples.filter(function(s){ return s.customerId !== id; });
+      notify('Customer deleted.');
+      showTab('dashboard');
+    })
+    .withFailureHandler(function(err) { notify('Error: '+(err.message||err), 'error'); })
+    .deleteCustomer(id);
+}
+
+function deleteSample(id, year) {
+  if (!confirm('Delete the '+year+' sample? This cannot be undone.')) return;
+  google.script.run
+    .withSuccessHandler(function() {
+      samples = samples.filter(function(s){ return s.id !== id; });
+      notify('Sample deleted.');
+      if (selectedCustomer) openCustomer(selectedCustomer.id);
+    })
+    .withFailureHandler(function(err) { notify('Error: '+(err.message||err), 'error'); })
+    .deleteSample(id);
+}
+
+// ══════════════════════════════════════════════════════
+// Reports
+// ══════════════════════════════════════════════════════
+function renderReportPage() {
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px" class="no-print">'
+    + '<div style="font-size:22px;font-weight:700;color:#f5f5f4">Generate Customer Report</div>'
+    + '<button class="btn-green" onclick="window.print()">🖨️ Print / Save PDF</button></div>';
+
+  html += '<div class="card no-print"><div class="sec-title">Select Customer</div>'
+    + '<select class="form-input" id="report-select" onchange="renderReport()"><option value="">-- Select a customer --</option>';
+  customers.forEach(function(c) { html += '<option value="'+c.id+'">'+esc(c.name)+'</option>'; });
+  html += '</select></div><div id="report-output"></div>';
+
+  setContent(html);
+}
+
+function showReportFor(id) {
+  showTab('report');
+  setTimeout(function() {
+    var sel = document.getElementById('report-select');
+    if (sel) { sel.value = id; renderReport(); }
+  }, 100);
+}
+
+function renderReport() {
+  var id = document.getElementById('report-select').value;
+  var output = document.getElementById('report-output');
+  if (!id) { output.innerHTML = ''; return; }
+
+  var c = customers.find(function(x){ return x.id === id; });
+  var sorted = samples.filter(function(s){ return s.customerId === id; }).sort(function(a,b){ return a.year - b.year; });
+  if (!c || sorted.length === 0) {
+    output.innerHTML = '<div class="card" style="color:#78716c;font-family:sans-serif">No samples found.</div>';
+    return;
+  }
+
+  var html = '<div class="report-paper">'
+    + '<div class="report-header"><div>'
+    + '<div class="report-logo"><span>LAWNS</span><span>PLANTS</span><span>&amp; PESTS</span></div>'
+    + '<div style="font-size:11px;color:#666;margin-top:6px">Soil Health Report</div></div>'
+    + '<div class="report-customer"><div class="report-customer-name">'+esc(c.name)+'</div>'
+    + (c.field?'<div class="report-customer-sub">'+esc(c.field)+'</div>':'')
+    + (c.address?'<div class="report-customer-sub">'+esc(c.address)+(c.city?', '+esc(c.city):'')+'</div>':'')
+    + '<div class="report-customer-sub" style="margin-top:4px;color:#999">Generated: '+new Date().toLocaleDateString()+'</div>'
+    + '</div></div>';
+
+  // Recommendations
+  html += '<div style="margin-bottom:20px"><div class="report-section-title">Limestone & Nutrient Recommendations</div>'
+    + '<table class="report-table"><thead><tr><th>Item</th>';
+  sorted.forEach(function(s){ html += '<th class="center">'+s.year+'</th>'; });
+  html += '</tr></thead><tbody>';
+  [{key:'limestoneLbs',label:'Limestone (lb/1000 ft²)'},{key:'recN',label:'Nitrogen (N)'},{key:'recP',label:'Phosphorus (P₂O₅)'},{key:'recK',label:'Potassium (K₂O)'}].forEach(function(row) {
+    html += '<tr><td style="font-weight:600">'+row.label+'</td>';
+    sorted.forEach(function(s) {
+      var v = s[row.key];
+      var isNone = !v || String(v).toLowerCase() === 'none' || v === '0';
+      html += '<td class="center" style="color:'+(isNone?'#16a34a':'#d97706')+'">'+(v||'None')+'</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+
+  // Soil test results
+  html += '<div><div class="report-section-title">Soil Test Results</div>'
+    + '<table class="report-table"><thead><tr><th>Metric</th><th>Ideal Range</th>';
+  sorted.forEach(function(s){ html += '<th class="center">'+s.year+'</th>'; });
+  html += '</tr></thead><tbody>';
+  METRICS.forEach(function(m) {
+    html += '<tr><td style="font-weight:600">'+m.label+'</td>'
+      + '<td style="color:#666;font-family:monospace;font-size:11px">'+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</td>';
+    sorted.forEach(function(s) {
+      var v = parseFloat(s[m.key]);
+      var clr = isNaN(v) ? '#999' : (v >= m.min && v <= m.max) ? '#16a34a' : v < m.min ? '#dc2626' : '#d97706';
+      html += '<td class="center" style="color:'+clr+'">'+(s[m.key]||'—')+'</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+
+  html += '<div class="report-footer">'
+    + '<div style="font-size:11px;color:#999">🟢 Optimal &nbsp; 🟠 Above optimal &nbsp; 🔴 Below optimal</div>'
+    + '<div style="font-size:12px;color:#2d5a1b;font-weight:700">Lawns Plants & Pests LLC</div></div></div>';
+
+  output.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════
+// Info Modal
+// ══════════════════════════════════════════════════════
+function showInfoModal(key) {
+  var m = METRICS.find(function(x){ return x.key === key; });
+  if (!m) return;
+  var html = '<button class="modal-close" onclick="document.getElementById(\'info-modal\').classList.remove(\'visible\')">×</button>'
+    + '<h2>'+m.label+'</h2>'
+    + '<div class="modal-range">Optimal: '+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</div>'
+    + '<div class="modal-section"><div class="modal-section-title">What is it?</div><div class="modal-body">'+m.desc+'</div></div>'
+    + '<div class="modal-section"><div class="modal-section-title">What to do</div><div class="modal-body">'+m.rec+'</div></div>';
+  document.getElementById('info-modal-body').innerHTML = html;
+  document.getElementById('info-modal').classList.add('visible');
+}
+
+function closeModal(event) {
+  if (event.target === document.getElementById('info-modal')) {
+    document.getElementById('info-modal').classList.remove('visible');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// Helpers
+// ══════════════════════════════════════════════════════
+function statusBadge(value, m) {
+  if (value == null || value === '' || value === undefined) return '<span class="badge-gray">—</span>';
+  var v = parseFloat(value);
+  if (isNaN(v)) return '<span class="badge-gray">—</span>';
+  var cls = (v >= m.min && v <= m.max) ? 'badge-green' : v < m.min ? 'badge-red' : 'badge-orange';
+  return '<span class="badge '+cls+'">'+value+(m.unit?' '+m.unit:'')+'</span>';
+}
+
+function recBadge(val) {
+  if (!val || val === undefined) return '<span class="badge-gray">—</span>';
+  var isNone = String(val).toLowerCase() === 'none' || val === '0' || val === '';
+  return '<span class="badge '+(isNone?'badge-green':'badge-orange')+'">'+(isNone?'None':val)+'</span>';
+}
+
+function notify(msg, type) {
+  var el = document.getElementById('notification');
+  el.textContent = msg;
+  el.className = 'notification ' + (type || 'success');
+  el.style.display = 'block';
+  setTimeout(function(){ el.style.display = 'none'; }, 5000);
+}
+
+function showError(err) {
+  setContent('<div class="card" style="color:#f87171;font-family:sans-serif"><b>Error:</b> '+(err.message||err)+'</div>');
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString(); } catch(e) { return iso; }
+}
+</script>
+</body>
+</html>
