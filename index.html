@@ -656,7 +656,7 @@ function saveNewCustomer() {
       showTab("customers");
     })
     .withFailureHandler(showError)
-    .saveCustomer({ action:"saveCustomer", data: data });
+    .saveCustomer(data);
 }
 
 // ══════════════════════════════════════════════════════
@@ -843,7 +843,7 @@ function saveSampleForm() {
       }
     })
     .withFailureHandler(showError)
-    .saveSample({ action:"saveSample", data: data });
+    .saveSample(data);
 }
 
 // ══════════════════════════════════════════════════════
