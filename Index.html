@@ -4,116 +4,139 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>SoilTrack - Lawns Plants & Pests</title>
+<title>SoilTracks - Lawns Plants &amp; Pests</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0c0c0c; color: #e7e5e4; font-family: Georgia, serif; min-height: 100vh; }
+  body { background: #0c0c0c; color: #e7e5e4; font-family: Georgia, serif; min-height: 100vh; font-size: 16px; }
 
-  /* ── Header & Nav ── */
-  .header { background: #111; border-bottom: 1px solid #292524; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #4ade80, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .logo-text { font-size: 17px; font-weight: 700; color: #f5f5f4; }
-  .logo-sub { font-size: 10px; color: #78716c; font-family: monospace; }
-  .nav { display: flex; gap: 4px; }
-  .nav-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: 600; background: transparent; color: #a8a29e; font-family: sans-serif; white-space: nowrap; }
+  /* Header */
+  .header { background: #111; border-bottom: 1px solid #292524; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; gap: 10px; }
+  .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .logo-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+  .logo-text { font-size: 18px; font-weight: 700; color: #f5f5f4; }
+  .logo-sub { font-size: 11px; color: #78716c; font-family: monospace; }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-btn { min-height: 44px; padding: 0 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; background: transparent; color: #a8a29e; font-family: sans-serif; white-space: nowrap; }
   .nav-btn.active { background: #4ade8022; color: #4ade80; }
+  .nav-btn:hover { background: #1a1a1a; }
 
-  /* ── Layout ── */
+  /* Layout */
   .main { padding: 20px 16px; max-width: 900px; margin: 0 auto; }
   .page { display: none; }
   .page.active { display: block; }
 
-  /* ── Cards ── */
-  .card { background: #161616; border: 1px solid #222; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
-  .sec-title { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #57534e; margin-bottom: 12px; font-family: sans-serif; }
-  .sub-head { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4ade8077; margin: 16px 0 8px; padding-bottom: 5px; border-bottom: 1px solid #1f1f1f; font-family: sans-serif; }
+  /* Cards */
+  .card { background: #161616; border: 1px solid #222; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+  .sec-title { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #57534e; margin-bottom: 14px; font-family: sans-serif; }
+  .sub-head { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #4ade8077; margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid #1f1f1f; font-family: sans-serif; }
+  .page-title { font-size: 22px; font-weight: 700; color: #f5f5f4; margin-bottom: 4px; }
+  .page-sub { color: #78716c; font-size: 13px; font-family: sans-serif; margin-bottom: 20px; }
 
-  /* ── Stats ── */
+  /* Stats */
   .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: #161616; border: 1px solid #222; border-radius: 10px; padding: 14px; }
-  .stat-icon { font-size: 22px; margin-bottom: 4px; }
-  .stat-val { font-size: 28px; font-weight: 900; color: #4ade80; font-family: Georgia, serif; }
-  .stat-label { font-size: 11px; color: #78716c; font-family: sans-serif; }
+  .stat-card { background: #161616; border: 1px solid #222; border-radius: 12px; padding: 16px; }
+  .stat-icon { font-size: 24px; margin-bottom: 6px; }
+  .stat-val { font-size: 32px; font-weight: 900; color: #4ade80; font-family: Georgia, serif; }
+  .stat-label { font-size: 12px; color: #78716c; font-family: sans-serif; margin-top: 2px; }
 
-  /* ── Buttons ── */
-  .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
+  /* Buttons */
+  .btn-green { background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 10px; padding: 13px 22px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: sans-serif; min-height: 48px; }
   .btn-green:hover { opacity: 0.9; }
-  .btn-outline { background: transparent; border: 1px solid #292524; border-radius: 6px; color: #a8a29e; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: sans-serif; }
-  .btn-danger { background: #7f1d1d33; border: 1px solid #f8717133; border-radius: 6px; color: #f87171; padding: 6px 14px; cursor: pointer; font-size: 13px; font-family: sans-serif; }
-  .btn-full { width: 100%; margin-top: 8px; padding: 11px 0; }
-  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-green:active { opacity: 0.8; }
+  .btn-outline { background: transparent; border: 1px solid #333; border-radius: 8px; color: #a8a29e; padding: 10px 16px; cursor: pointer; font-size: 14px; font-family: sans-serif; min-height: 44px; }
+  .btn-outline:hover { border-color: #555; color: #e7e5e4; }
+  .btn-danger { background: #7f1d1d33; border: 1px solid #f8717133; border-radius: 8px; color: #f87171; padding: 10px 16px; cursor: pointer; font-size: 14px; font-family: sans-serif; min-height: 44px; }
+  .btn-danger:hover { background: #7f1d1d55; }
+  .btn-full { width: 100%; margin-top: 10px; padding: 15px 0; font-size: 16px; }
+  .btn-sm { padding: 8px 14px; font-size: 13px; min-height: 40px; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
 
-  /* ── Forms ── */
-  .form-group { margin-bottom: 10px; }
-  .form-label { font-size: 11px; color: #78716c; margin-bottom: 3px; display: block; font-family: sans-serif; }
-  .form-input { width: 100%; background: #1a1a1a; border: 1px solid #292524; border-radius: 6px; padding: 8px 12px; color: #e7e5e4; font-size: 13px; font-family: monospace; }
+  /* Forms */
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 13px; color: #a8a29e; margin-bottom: 5px; display: block; font-family: sans-serif; font-weight: 600; }
+  .form-input { width: 100%; background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 12px 14px; color: #e7e5e4; font-size: 16px; font-family: sans-serif; min-height: 48px; -webkit-appearance: none; }
   .form-input:focus { outline: none; border-color: #4ade8055; }
   select.form-input { cursor: pointer; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  textarea.form-input { min-height: 80px; resize: vertical; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-  /* ── Customer List ── */
-  .search-bar { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: #161616; border: 1px solid #222; border-radius: 10px; margin-bottom: 14px; }
-  .search-bar input { flex: 1; border: none; outline: none; font-size: 14px; background: transparent; color: #e7e5e4; font-family: sans-serif; }
-  .customer-row { padding: 10px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; transition: all 0.15s; }
+  /* Search & Customer list */
+  .search-bar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #161616; border: 1px solid #222; border-radius: 12px; margin-bottom: 14px; }
+  .search-bar input { flex: 1; border: none; outline: none; font-size: 16px; background: transparent; color: #e7e5e4; font-family: sans-serif; min-height: 28px; }
+  .customer-row { padding: 14px 16px; border-radius: 10px; cursor: pointer; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid transparent; transition: all 0.15s; min-height: 64px; }
   .customer-row:hover { background: #1a1a1a; border-color: #2a2a2a; }
-  .customer-name { font-weight: 700; color: #f5f5f4; font-size: 15px; }
-  .customer-sub { font-size: 11px; color: #78716c; font-family: sans-serif; margin-top: 2px; }
+  .customer-row:active { background: #1e1e1e; }
+  .customer-name { font-weight: 700; color: #f5f5f4; font-size: 17px; }
+  .customer-sub { font-size: 13px; color: #78716c; font-family: sans-serif; margin-top: 3px; }
 
-  /* ── Badges ── */
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 5px; font-size: 12px; font-weight: 700; font-family: monospace; }
+  /* Badges */
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 700; font-family: monospace; }
   .badge-green { background: #4ade8018; color: #4ade80; border: 1px solid #4ade8033; }
   .badge-red { background: #f8717118; color: #f87171; border: 1px solid #f8717133; }
   .badge-orange { background: #fb923c18; color: #fb923c; border: 1px solid #fb923c33; }
   .badge-gray { color: #57534e; }
 
-  /* ── Tables ── */
+  /* Tables */
   .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { padding: 6px 10px; font-weight: 600; border-bottom: 1px solid #222; font-family: sans-serif; font-size: 11px; color: #57534e; text-align: left; }
-  th.year-col { text-align: center; color: #a8a29e; font-family: monospace; font-size: 13px; }
-  td { padding: 7px 10px; border-bottom: 1px solid #161616; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { padding: 8px 10px; font-weight: 600; border-bottom: 1px solid #222; font-family: sans-serif; font-size: 12px; color: #57534e; text-align: left; }
+  th.year-col { text-align: center; color: #a8a29e; font-family: monospace; font-size: 14px; }
+  td { padding: 9px 10px; border-bottom: 1px solid #161616; }
   td.center { text-align: center; }
-  .section-row td { padding: 10px 10px 4px; color: #4ade8077; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-family: sans-serif; border-bottom: 1px solid #1e1e1e; }
-  .metric-label { font-weight: 600; color: #d6d3d1; font-family: sans-serif; font-size: 13px; }
-  .ideal-range { color: #57534e; font-size: 11px; font-family: monospace; white-space: nowrap; }
+  .section-row td { padding: 12px 10px 5px; color: #4ade8077; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-family: sans-serif; border-bottom: 1px solid #1e1e1e; }
+  .metric-label { font-weight: 600; color: #d6d3d1; font-family: sans-serif; font-size: 14px; }
+  .ideal-range { color: #57534e; font-size: 12px; font-family: monospace; white-space: nowrap; }
 
-  /* ── Score Card ── */
-  .score-card { display: flex; align-items: center; gap: 10px; background: #111; border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; }
-  .score-pct { font-size: 34px; font-weight: 900; font-family: Georgia, serif; line-height: 1; }
-  .score-label { color: #d6d3d1; font-weight: 700; font-size: 13px; font-family: sans-serif; }
-  .score-sub { color: #78716c; font-size: 11px; font-family: sans-serif; }
+  /* Score card */
+  .score-card { display: flex; align-items: center; gap: 14px; background: #111; border-radius: 12px; padding: 16px 18px; margin-bottom: 16px; border: 1px solid #222; }
+  .score-pct { font-size: 38px; font-weight: 900; font-family: Georgia, serif; line-height: 1; }
+  .score-label { color: #d6d3d1; font-weight: 700; font-size: 15px; font-family: sans-serif; }
+  .score-sub { color: #78716c; font-size: 13px; font-family: sans-serif; margin-top: 2px; }
 
-  /* ── Scan Options ── */
-  .scan-option { display: flex; align-items: center; gap: 14px; padding: 18px; background: #161616; border: 1px solid #222; border-radius: 12px; cursor: pointer; margin-bottom: 12px; transition: all 0.15s; }
-  .scan-option:hover { border-color: #4ade8055; }
+  /* Scan / upload */
+  .scan-option { display: flex; align-items: center; gap: 16px; padding: 20px; background: #161616; border: 1px solid #222; border-radius: 14px; cursor: pointer; margin-bottom: 14px; transition: all 0.15s; min-height: 80px; }
+  .scan-option:hover { border-color: #4ade8044; }
   .scan-option.primary { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; border-color: #16a34a; }
-  .scan-option .icon { font-size: 28px; flex-shrink: 0; }
-  .scan-option .title { font-size: 16px; font-weight: 700; margin-bottom: 3px; font-family: sans-serif; }
-  .scan-option .desc { font-size: 13px; opacity: 0.7; line-height: 1.4; font-family: sans-serif; }
+  .scan-option .icon { font-size: 32px; flex-shrink: 0; }
+  .scan-option .title { font-size: 18px; font-weight: 700; margin-bottom: 4px; font-family: sans-serif; }
+  .scan-option .desc { font-size: 14px; opacity: 0.75; line-height: 1.4; font-family: sans-serif; }
+  .drop-zone { border: 2px dashed #333; border-radius: 14px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; font-family: sans-serif; }
+  .drop-zone:hover, .drop-zone.dragover { border-color: #4ade80; background: #4ade8008; }
+  .drop-zone .dz-icon { font-size: 40px; margin-bottom: 10px; }
+  .drop-zone .dz-title { font-size: 16px; font-weight: 700; color: #d6d3d1; margin-bottom: 4px; }
+  .drop-zone .dz-sub { font-size: 13px; color: #78716c; }
+  .preview-img { max-width: 100%; max-height: 200px; border-radius: 10px; margin: 10px 0; display: block; }
 
-  /* ── Info Modal ── */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
   .modal-overlay.visible { display: flex; }
-  .modal { background: #1a1a1a; border: 1px solid #333; border-radius: 16px 16px 0 0; padding: 24px; width: 100%; max-width: 500px; max-height: 70vh; overflow-y: auto; }
-  .modal h2 { font-size: 18px; font-weight: 700; color: #f5f5f4; margin-bottom: 4px; }
-  .modal-range { font-size: 12px; color: #4ade80; margin-bottom: 14px; font-family: monospace; }
-  .modal-section { margin-bottom: 14px; }
-  .modal-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; margin-bottom: 4px; font-family: sans-serif; }
-  .modal-body { font-size: 14px; line-height: 1.6; color: #a8a29e; }
-  .modal-close { float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: #78716c; }
+  .modal { background: #1a1a1a; border: 1px solid #333; border-radius: 20px 20px 0 0; padding: 28px 24px; width: 100%; max-width: 540px; max-height: 80vh; overflow-y: auto; }
+  .modal h2 { font-size: 20px; font-weight: 700; color: #f5f5f4; margin-bottom: 6px; }
+  .modal-range { font-size: 14px; color: #4ade80; margin-bottom: 16px; font-family: monospace; }
+  .modal-section { margin-bottom: 16px; }
+  .modal-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; margin-bottom: 6px; font-family: sans-serif; }
+  .modal-body { font-size: 15px; line-height: 1.65; color: #a8a29e; }
+  .modal-close { float: right; background: none; border: none; font-size: 28px; cursor: pointer; color: #78716c; min-width: 44px; min-height: 44px; line-height: 1; }
 
-  /* ── Notification ── */
-  .notification { position: fixed; top: 16px; left: 16px; right: 16px; border-radius: 8px; padding: 12px 18px; font-size: 13px; font-weight: 600; z-index: 999; box-shadow: 0 8px 32px #00000088; font-family: sans-serif; display: none; }
+  /* Confirm dialog */
+  .confirm-box { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .confirm-box.visible { display: flex; }
+  .confirm-inner { background: #1a1a1a; border: 1px solid #333; border-radius: 16px; padding: 28px 24px; max-width: 360px; width: 100%; font-family: sans-serif; }
+  .confirm-inner h3 { font-size: 18px; font-weight: 700; color: #f5f5f4; margin-bottom: 8px; }
+  .confirm-inner p { font-size: 14px; color: #a8a29e; margin-bottom: 20px; line-height: 1.5; }
+  .confirm-btns { display: flex; gap: 10px; }
+
+  /* Notifications */
+  .notification { position: fixed; top: 16px; left: 12px; right: 12px; border-radius: 10px; padding: 14px 18px; font-size: 15px; font-weight: 600; z-index: 999; box-shadow: 0 8px 32px #00000088; font-family: sans-serif; display: none; max-width: 500px; margin: 0 auto; }
   .notification.success { background: #14532d; border: 1px solid #4ade80; color: #bbf7d0; }
   .notification.error { background: #7f1d1d; border: 1px solid #f87171; color: #fca5a5; }
+  .notification.info { background: #1e3a5f; border: 1px solid #60a5fa; color: #bfdbfe; }
 
-  /* ── Report (Print) ── */
-  .report-paper { background: white; color: #1a1a1a; border-radius: 12px; padding: 32px; font-family: sans-serif; }
-  .report-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 3px solid #2d5a1b; padding-bottom: 16px; }
+  /* Print / Report */
+  .report-paper { background: white; color: #1a1a1a; border-radius: 12px; padding: 28px; font-family: sans-serif; }
+  .report-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 3px solid #2d5a1b; padding-bottom: 16px; flex-wrap: wrap; gap: 12px; }
   .report-logo { font-size: 20px; font-weight: 900; color: #2d5a1b; letter-spacing: -1px; line-height: 1.1; }
-  .report-logo span { display: block; }
   .report-customer { text-align: right; }
   .report-customer-name { font-size: 18px; font-weight: 700; color: #2d5a1b; }
   .report-customer-sub { font-size: 12px; color: #666; margin-top: 3px; }
@@ -124,29 +147,50 @@
   .report-table td { padding: 7px 10px; border-bottom: 1px solid #eee; }
   .report-table td.center { text-align: center; font-weight: 700; font-family: monospace; }
   .report-table tr:nth-child(even) td { background: #f9f9f9; }
-  .report-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+  .report-footer { margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 11px; color: #999; }
 
-  /* ── Loading & Empty ── */
-  .loading { text-align: center; padding: 60px; color: #78716c; font-family: sans-serif; }
-  .spinner { display: inline-block; width: 24px; height: 24px; border: 3px solid #333; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.7s linear infinite; }
+  /* Loading / Empty */
+  .loading { text-align: center; padding: 70px 20px; color: #78716c; font-family: sans-serif; }
+  .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid #333; border-top-color: #4ade80; border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .empty { text-align: center; padding: 40px 20px; color: #78716c; font-family: sans-serif; }
-  .empty-icon { font-size: 40px; margin-bottom: 10px; }
+  .empty { text-align: center; padding: 48px 20px; color: #78716c; font-family: sans-serif; }
+  .empty-icon { font-size: 44px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; font-weight: 700; color: #f5f5f4; margin-bottom: 4px; }
 
-  /* ── Print ── */
+  /* Settings */
+  .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #1e1e1e; flex-wrap: wrap; gap: 10px; }
+  .setting-label { font-size: 14px; font-weight: 600; color: #d6d3d1; font-family: sans-serif; }
+  .setting-sub { font-size: 12px; color: #78716c; font-family: sans-serif; margin-top: 2px; }
+  .api-key-display { font-family: monospace; font-size: 13px; color: #4ade80; background: #0a1f0f; border: 1px solid #4ade8033; border-radius: 6px; padding: 6px 12px; }
+
+  /* Back link */
+  .back-btn { display: inline-flex; align-items: center; gap: 6px; color: #78716c; font-family: sans-serif; font-size: 14px; cursor: pointer; margin-bottom: 18px; background: none; border: none; padding: 0; }
+  .back-btn:hover { color: #a8a29e; }
+
+  /* AI status banner */
+  .ai-banner { background: #1a1a00; border: 1px solid #fb923c33; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-family: sans-serif; font-size: 13px; color: #fb923c; display: flex; align-items: center; gap: 10px; }
+  .ai-success-banner { background: #0a1f0f; border: 1px solid #4ade8033; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-family: sans-serif; font-size: 13px; color: #4ade80; }
+  .extracted-info { background: #111; border: 1px solid #222; border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; font-family: sans-serif; font-size: 13px; }
+  .extracted-info div { margin-bottom: 4px; color: #a8a29e; }
+  .extracted-info strong { color: #d6d3d1; }
+
+  /* Print */
   @media print {
     .header, .no-print { display: none !important; }
     body { background: white; }
     .main { padding: 0; }
-    .report-paper { border-radius: 0; }
+    .report-paper { border-radius: 0; box-shadow: none; }
   }
 
-  /* ── Responsive ── */
+  /* Mobile */
   @media (max-width: 600px) {
     .stats-grid { grid-template-columns: 1fr 1fr; }
     .grid-2 { grid-template-columns: 1fr; }
     .grid-3 { grid-template-columns: 1fr 1fr; }
-    .nav-btn { padding: 6px 8px; font-size: 11px; }
+    .nav-btn { padding: 0 8px; font-size: 12px; }
+    .logo-sub { display: none; }
+    .main { padding: 16px 12px; }
+    .card { padding: 16px; }
   }
 </style>
 </head>
@@ -154,699 +198,1073 @@
 
 <div class="notification" id="notification"></div>
 
-<div class="header">
-  <div class="logo">
-    <div class="logo-icon">🌱</div>
-    <div>
-      <div class="logo-text">SoilTrack</div>
-      <div class="logo-sub">Lawns Plants & Pests LLC</div>
+<div class="confirm-box" id="confirm-box">
+  <div class="confirm-inner">
+    <h3 id="confirm-title">Are you sure?</h3>
+    <p id="confirm-msg"></p>
+    <div class="confirm-btns">
+      <button class="btn-danger btn-sm" id="confirm-yes">Delete</button>
+      <button class="btn-outline btn-sm" onclick="closeConfirm()">Cancel</button>
     </div>
   </div>
-  <div class="nav">
-    <button class="nav-btn active" onclick="showTab('dashboard')">Dashboard</button>
-    <button class="nav-btn" onclick="showTab('add')">+ Add</button>
-    <button class="nav-btn" onclick="showTab('report')">Reports</button>
-  </div>
 </div>
 
-<div class="main" id="content">
-  <div class="loading"><div class="spinner"></div><p style="margin-top:12px">Loading...</p></div>
-</div>
-
-<!-- Info Modal -->
-<div class="modal-overlay" id="info-modal" onclick="closeModal(event)">
+<div class="modal-overlay" id="info-modal" onclick="closeInfoModal(event)">
   <div class="modal" id="info-modal-body"></div>
 </div>
 
-<!-- Hidden file inputs -->
-<input type="file" accept="image/*" id="file-input" style="display:none" onchange="handleFileUpload(event)">
-<input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none" onchange="handleFileUpload(event)">
+<input type="file" accept="image/*" id="file-input" style="display:none">
+<input type="file" accept="application/json" id="import-input" style="display:none">
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="38" height="38" rx="8" fill="#1a1208"/>
+        <path d="M6 28c2-4 5-3 8-5s4-6 7-5 3 4 6 3 5-3 5-3v10H6z" fill="#3d2b1f"/>
+        <path d="M6 30c3-2 5-1 8-3s4-4 7-3 3 3 6 2 5-2 5-2v6H6z" fill="#5c3d2e"/>
+        <circle cx="12" cy="24" r="1.2" fill="#78716c" opacity="0.5"/>
+        <circle cx="22" cy="26" r="0.8" fill="#78716c" opacity="0.4"/>
+        <circle cx="28" cy="25" r="1" fill="#78716c" opacity="0.3"/>
+        <path d="M19 8v12" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M19 8c0 0-4 3-5 6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M19 10c0 0 3 2 4 5" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <ellipse cx="14" cy="13" rx="3" ry="4" fill="#4ade80" opacity="0.8" transform="rotate(-20 14 13)"/>
+        <ellipse cx="23" cy="14" rx="2.5" ry="3.5" fill="#22c55e" opacity="0.7" transform="rotate(15 23 14)"/>
+        <ellipse cx="18" cy="9" rx="2" ry="3" fill="#16a34a" opacity="0.9" transform="rotate(-5 18 9)"/>
+      </svg>
+    </div>
+    <div>
+      <div class="logo-text">SoilTracks</div>
+      <div class="logo-sub">Lawns Plants &amp; Pests LLC</div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" id="nav-dashboard" onclick="showPage('dashboard')">Dashboard</button>
+    <button class="nav-btn" id="nav-customers" onclick="showPage('customers')">Customers</button>
+    <button class="nav-btn" id="nav-add" onclick="startAddSample()">+ Add</button>
+    <button class="nav-btn" id="nav-settings" onclick="showPage('settings')">Settings</button>
+  </div>
+</div>
+
+<div class="main" id="app-root"></div>
 
 <script>
+// ══════════════════════════════════════════════════════
+// Storage
+// ══════════════════════════════════════════════════════
+var LS = {
+  CUSTOMERS: 'st_customers',
+  SAMPLES:   'st_samples',
+  API_KEY:   'st_apikey'
+};
+
+function loadData() {
+  try { customers = JSON.parse(localStorage.getItem(LS.CUSTOMERS) || '[]'); } catch(e) { customers = []; }
+  try { samples   = JSON.parse(localStorage.getItem(LS.SAMPLES)   || '[]'); } catch(e) { samples = []; }
+}
+function saveCustomers() { localStorage.setItem(LS.CUSTOMERS, JSON.stringify(customers)); }
+function saveSamples()   { localStorage.setItem(LS.SAMPLES,   JSON.stringify(samples)); }
+function getApiKey()     { return localStorage.getItem(LS.API_KEY) || ''; }
+function setApiKey(k)    { localStorage.setItem(LS.API_KEY, k.trim()); }
+
+function genId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
 // ══════════════════════════════════════════════════════
 // State
 // ══════════════════════════════════════════════════════
 var customers = [];
-var samples = [];
-var currentView = 'dashboard';
-var selectedCustomer = null;
-var prefillData = null;
+var samples   = [];
+var currentPage = 'dashboard';
+var activeCustomerId = null;
+var scanPrefill = null;
+var pendingConfirmFn = null;
 
 // ══════════════════════════════════════════════════════
-// Metrics (matches Code.gs)
+// Metric definitions
 // ══════════════════════════════════════════════════════
 var METRICS = [
-  { key:'pH', label:'Soil pH', unit:'', min:6.0, max:7.0, section:'Lab Results',
+  { key:'pH',           label:'Soil pH',          unit:'',         optMin:6.0,  optMax:7.0,  section:'Lab Results',
     desc:'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0.',
     rec:'If too low, apply limestone. If too high, apply sulfur.' },
-  { key:'phosphorus', label:'Phosphorus (P)', unit:'lb/A', min:50, max:100, section:'Lab Results',
+  { key:'phosphorus',   label:'Phosphorus (P)',    unit:'lb/A',     optMin:50,   optMax:100,  section:'Lab Results',
     desc:'Drives root development and early establishment. High levels can interfere with zinc and iron uptake.',
     rec:'If deficient, apply phosphate fertilizer. Avoid excess — runoff harms waterways.' },
-  { key:'organicMatter', label:'Organic Matter', unit:'%', min:3, max:6, section:'Lab Results',
-    desc:'Improves water retention, feeds soil biology, and buffers pH swings. Even 0.1% gain per year is meaningful.',
+  { key:'organicMatter',label:'Organic Matter',    unit:'%',        optMin:3,    optMax:6,    section:'Lab Results',
+    desc:'Improves water retention, feeds soil biology, and buffers pH swings.',
     rec:'Top-dress with compost, use organic fertilizers, minimize soil disturbance.' },
-  { key:'acidity', label:'Buffer Acidity', unit:'meq/100g', min:0, max:2, section:'Exchangeable Cations',
+  { key:'acidity',      label:'Buffer Acidity',    unit:'meq/100g', optMin:0,    optMax:2,    section:'Exchangeable Cations',
     desc:'Reserve acidity in soil. Higher values mean more limestone is needed to raise pH.',
     rec:'This value determines your limestone application rate.' },
-  { key:'potassium', label:'Potassium (K)', unit:'meq/100g', min:0.15, max:0.40, section:'Exchangeable Cations',
+  { key:'potassium',    label:'Potassium (K)',      unit:'meq/100g', optMin:0.15, optMax:0.40, section:'Exchangeable Cations',
     desc:'Essential for water regulation, disease resistance, and winter hardiness.',
     rec:'If deficient, apply potash (K₂O). Important for stress tolerance.' },
-  { key:'magnesium', label:'Magnesium (Mg)', unit:'meq/100g', min:0.5, max:2.5, section:'Exchangeable Cations',
+  { key:'magnesium',    label:'Magnesium (Mg)',     unit:'meq/100g', optMin:0.5,  optMax:2.5,  section:'Exchangeable Cations',
     desc:'The central atom in every chlorophyll molecule. Plants cannot photosynthesize without it.',
     rec:'If deficient, apply dolomitic limestone or Epsom salt.' },
-  { key:'calcium', label:'Calcium (Ca)', unit:'meq/100g', min:5, max:15, section:'Exchangeable Cations',
+  { key:'calcium',      label:'Calcium (Ca)',       unit:'meq/100g', optMin:5,    optMax:15,   section:'Exchangeable Cations',
     desc:'Builds strong cell walls and improves soil structure. Primary component of limestone.',
     rec:'If deficient, apply calcitic or dolomitic limestone.' },
-  { key:'cec', label:'CEC', unit:'meq/100g', min:10, max:20, section:'Exchangeable Cations', infoOnly:true,
-    desc:'Total ability of soil to hold nutrient ions. Higher means less leaching risk.',
-    rec:'CEC is informational. Improve it by adding organic matter like compost.' },
-  { key:'satK', label:'K Saturation', unit:'%', min:2, max:5, section:'% Saturation of CEC',
-    desc:'Percentage of CEC occupied by potassium. Too high blocks magnesium and calcium uptake.',
-    rec:'If too low, apply potassium. If too high relative to Mg, focus on balancing.' },
-  { key:'satMg', label:'Mg Saturation', unit:'%', min:10, max:20, section:'% Saturation of CEC',
+  { key:'cec',          label:'CEC',                unit:'meq/100g', optMin:10,   optMax:20,   section:'Exchangeable Cations', infoOnly:true,
+    desc:'Total ability of soil to hold nutrient ions. Higher CEC means less leaching risk.',
+    rec:'CEC is informational. Improve it long-term by adding organic matter.' },
+  { key:'satK',         label:'K Saturation',       unit:'%',        optMin:2,    optMax:5,    section:'% Saturation of CEC',
+    desc:'Percentage of CEC occupied by potassium. Too high can block magnesium and calcium uptake.',
+    rec:'If too low, apply potassium. If too high, balance with calcium and magnesium.' },
+  { key:'satMg',        label:'Mg Saturation',      unit:'%',        optMin:10,   optMax:20,   section:'% Saturation of CEC',
     desc:'Percentage of CEC occupied by magnesium. Low levels cause chlorophyll deficiency.',
     rec:'If deficient, apply dolomitic limestone or Epsom salt.' },
-  { key:'satCa', label:'Ca Saturation', unit:'%', min:60, max:80, section:'% Saturation of CEC',
+  { key:'satCa',        label:'Ca Saturation',      unit:'%',        optMin:60,   optMax:80,   section:'% Saturation of CEC',
     desc:'Percentage of CEC occupied by calcium. Low Ca usually signals acidic soil needing lime.',
     rec:'If deficient, apply limestone. Calcium and pH are closely linked.' }
 ];
 
-var LAB_SECTIONS = {
-  'Lab Results': ['pH','phosphorus','organicMatter'],
-  'Exchangeable Cations': ['acidity','potassium','magnesium','calcium','cec'],
-  '% Saturation of CEC': ['satK','satMg','satCa']
-};
+var LAB_SECTIONS = ['Lab Results', 'Exchangeable Cations', '% Saturation of CEC'];
 
-var REC_ROWS = [
-  { key:'limestoneLbs', label:'🪨 Limestone', note:'Raises pH. Split if over 100 lb. Aerate first.' },
-  { key:'recN', label:'🌿 Nitrogen (N)', note:'Split into multiple apps through the season.' },
-  { key:'recP', label:'🌱 Phosphorus (P₂O₅)', note:'Only apply what the test recommends.' },
-  { key:'recK', label:'💧 Potassium (K₂O)', note:'Important for winter hardiness.' }
+var REC_KEYS = [
+  { key:'limestoneLbs', label:'Limestone (lb/A)',    note:'Raises pH. Split if over 100 lb. Aerate first.' },
+  { key:'recN',         label:'Nitrogen (N)',         note:'Split into multiple apps through the season.' },
+  { key:'recP',         label:'Phosphorus (P₂O₅)',   note:'Only apply what the test recommends.' },
+  { key:'recK',         label:'Potassium (K₂O)',      note:'Important for winter hardiness.' }
 ];
+
+// ══════════════════════════════════════════════════════
+// Utilities
+// ══════════════════════════════════════════════════════
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmt(v, digits) {
+  if (v === undefined || v === null || v === '') return '<span class="badge-gray">—</span>';
+  var n = parseFloat(v);
+  if (isNaN(n)) return '<span class="badge-gray">—</span>';
+  return n.toFixed(digits !== undefined ? digits : (n % 1 === 0 ? 0 : 1));
+}
+
+function statusBadge(metric, val) {
+  if (metric.infoOnly || val === undefined || val === null || val === '') return '';
+  var n = parseFloat(val);
+  if (isNaN(n)) return '';
+  if (n >= metric.optMin && n <= metric.optMax) return '<span class="badge badge-green">OK</span>';
+  if (n > metric.optMax) return '<span class="badge badge-orange">High</span>';
+  return '<span class="badge badge-red">Low</span>';
+}
+
+function setRoot(html) { document.getElementById('app-root').innerHTML = html; }
+
+function showNotification(msg, type, duration) {
+  var el = document.getElementById('notification');
+  el.textContent = msg;
+  el.className = 'notification ' + (type || 'success');
+  el.style.display = 'block';
+  clearTimeout(el._timer);
+  el._timer = setTimeout(function() { el.style.display = 'none'; }, duration || 3000);
+}
+
+function showPage(name) {
+  currentPage = name;
+  document.querySelectorAll('.nav-btn').forEach(function(b) { b.classList.remove('active'); });
+  var nb = document.getElementById('nav-' + name);
+  if (nb) nb.classList.add('active');
+  if (name === 'dashboard')  renderDashboard();
+  else if (name === 'customers') renderCustomers();
+  else if (name === 'settings')  renderSettings();
+}
 
 // ══════════════════════════════════════════════════════
 // Init
 // ══════════════════════════════════════════════════════
-window.onload = function() {
-  var timeout = setTimeout(function() {
-    setContent('<div class="card" style="background:#1a1000;border-color:#fb923c;padding:20px;line-height:1.7;font-family:sans-serif">'
-      + '<div style="font-size:16px;font-weight:700;color:#fb923c;margin-bottom:10px">⚠️ Could not connect</div>'
-      + '<p style="font-size:13px;color:#a8a29e;margin-bottom:12px">This is usually an authorization issue. In the Apps Script editor, select <b>testConnection</b> from the function dropdown and click Run. Approve permissions, then refresh this page.</p>'
-      + '<button class="btn-green" onclick="location.reload()">↺ Retry</button></div>');
-  }, 12000);
+document.addEventListener('DOMContentLoaded', function() {
+  loadData();
+  renderDashboard();
 
-  google.script.run
-    .withSuccessHandler(function(result) {
-      clearTimeout(timeout);
-      if (!result.success) {
-        setContent('<div class="card" style="color:#f87171;font-family:sans-serif;padding:20px">'
-          + '<b>Error:</b> ' + esc(result.error) + '</div>');
-      } else {
-        loadDashboard();
-      }
-    })
-    .withFailureHandler(function(err) {
-      clearTimeout(timeout);
-      setContent('<div class="card" style="color:#f87171;font-family:sans-serif;padding:20px">'
-        + '<b>Script error:</b> ' + esc(err.message || String(err))
-        + '<br><button class="btn-green" style="margin-top:12px" onclick="location.reload()">↺ Retry</button></div>');
-    })
-    .testConnection();
-};
-
-// ══════════════════════════════════════════════════════
-// Data Loading
-// ══════════════════════════════════════════════════════
-function loadDashboard() {
-  setContent('<div class="loading"><div class="spinner"></div><p style="margin-top:12px">Loading...</p></div>');
-  google.script.run
-    .withSuccessHandler(function(data) {
-      customers = data.customers || [];
-      samples = data.samples || [];
-      renderDashboard(data);
-    })
-    .withFailureHandler(function(err) { showError(err); })
-    .getDashboardData();
-}
-
-// ══════════════════════════════════════════════════════
-// Navigation
-// ══════════════════════════════════════════════════════
-function showTab(tab) {
-  currentView = tab;
-  selectedCustomer = null;
-  document.querySelectorAll('.nav-btn').forEach(function(b, i) {
-    b.classList.toggle('active', ['dashboard','add','report'][i] === tab);
+  document.getElementById('file-input').addEventListener('change', function(e) {
+    if (e.target.files[0]) handleImageFile(e.target.files[0]);
+    e.target.value = '';
   });
-  if (tab === 'dashboard') loadDashboard();
-  else if (tab === 'add') renderAddSample();
-  else if (tab === 'report') renderReportPage();
-}
-
-function setContent(html) { document.getElementById('content').innerHTML = html; }
+  document.getElementById('import-input').addEventListener('change', function(e) {
+    if (e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = '';
+  });
+});
 
 // ══════════════════════════════════════════════════════
 // Dashboard
 // ══════════════════════════════════════════════════════
-function renderDashboard(data) {
-  var d = data || {};
-  var html = '<div style="margin-bottom:20px">'
-    + '<div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:4px">Farm Health Overview</div>'
-    + '<div style="color:#78716c;font-size:13px;font-family:sans-serif">'
-    + (d.customerCount||0)+' customers · '+(d.sampleCount||0)+' samples · '+(d.yearsCount||0)+' years of data</div></div>';
+function renderDashboard() {
+  var years = {};
+  samples.forEach(function(s) { if (s.year) years[s.year] = true; });
+  var issues = calcTopIssues();
+  var improvement = calcOverallImprovement();
 
-  html += '<div class="stats-grid">'
-    + '<div class="stat-card"><div class="stat-icon">👨‍🌾</div><div class="stat-val">'+(d.customerCount||0)+'</div><div class="stat-label">Customers</div></div>'
-    + '<div class="stat-card"><div class="stat-icon">🧪</div><div class="stat-val">'+(d.sampleCount||0)+'</div><div class="stat-label">Total Samples</div></div>'
-    + '<div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">'+(d.yearsCount||0)+'</div><div class="stat-label">Years of Data</div></div>'
+  var html = '<div class="page-title">Soil Data Overview</div>'
+    + '<div class="page-sub">'
+    + customers.length + ' customer' + (customers.length !== 1 ? 's' : '') + ' · '
+    + samples.length + ' sample' + (samples.length !== 1 ? 's' : '') + ' · '
+    + Object.keys(years).length + ' year' + (Object.keys(years).length !== 1 ? 's' : '') + ' of data'
     + '</div>';
 
-  if (d.improvementScore !== null && d.improvementScore !== undefined) {
-    var color = d.improvementScore >= 70 ? '#4ade80' : d.improvementScore >= 40 ? '#fb923c' : '#f87171';
-    html += '<div class="score-card" style="border:1px solid '+color+'33">'
-      + '<div class="score-pct" style="color:'+color+'">'+d.improvementScore+'%</div>'
-      + '<div><div class="score-label">Average Improvement</div><div class="score-sub">Year-over-year soil health trend</div></div></div>';
+  html += '<div class="stats-grid">'
+    + '<div class="stat-card"><div class="stat-icon">👨‍🌾</div><div class="stat-val">' + customers.length + '</div><div class="stat-label">Customers</div></div>'
+    + '<div class="stat-card"><div class="stat-icon">🧪</div><div class="stat-val">' + samples.length + '</div><div class="stat-label">Total Samples</div></div>'
+    + '<div class="stat-card"><div class="stat-icon">📅</div><div class="stat-val">' + Object.keys(years).length + '</div><div class="stat-label">Years Tracked</div></div>'
+    + '</div>';
+
+  if (improvement !== null) {
+    var color = improvement >= 70 ? '#4ade80' : improvement >= 40 ? '#fb923c' : '#f87171';
+    html += '<div class="score-card" style="border-color:' + color + '33">'
+      + '<div class="score-pct" style="color:' + color + '">' + improvement + '%</div>'
+      + '<div><div class="score-label">Average Soil Score</div><div class="score-sub">Metrics within optimal range</div></div></div>';
   }
 
-  if (d.topIssues && d.topIssues.length > 0) {
+  if (issues.length > 0) {
     html += '<div class="card"><div class="sec-title">Common Issues</div>';
-    d.topIssues.forEach(function(issue) {
+    issues.forEach(function(issue) {
       html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #1e1e1e">'
-        + '<span style="font-family:sans-serif;font-size:13px;color:#d6d3d1">'+esc(issue.label)+'</span>'
-        + '<span class="badge badge-red">'+issue.count+' out of range</span></div>';
+        + '<span style="font-family:sans-serif;font-size:13px;color:#d6d3d1">' + esc(issue.label) + '</span>'
+        + '<span class="badge badge-red">' + issue.count + ' out of range</span></div>';
     });
     html += '</div>';
   }
 
-  // Customer list with search
-  html += '<div class="card"><div class="sec-title">Customers</div>';
-  html += '<div class="search-bar no-print"><span style="color:#57534e">🔍</span><input id="cust-search" placeholder="Search customers..." oninput="filterCustomers()"></div>';
-  html += '<div id="customer-list">';
-  html += renderCustomerList(customers);
-  html += '</div></div>';
+  html += '<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">'
+    + '<div class="sec-title" style="margin:0">Customers</div>'
+    + '<button class="btn-green btn-sm no-print" onclick="showAddCustomer()">+ New Customer</button></div>';
+  html += '<div class="search-bar no-print"><span style="color:#57534e">🔍</span>'
+    + '<input id="cust-search" placeholder="Search customers..." oninput="filterCustomerList()" style="flex:1;border:none;outline:none;font-size:16px;background:transparent;color:#e7e5e4;font-family:sans-serif;min-height:28px"></div>';
+  html += '<div id="customer-list">' + buildCustomerRows(customers) + '</div></div>';
 
-  setContent(html);
+  setRoot(html);
 }
 
-function renderCustomerList(list) {
-  if (list.length === 0) return '<div class="empty"><div class="empty-icon">🌱</div><div style="font-size:15px;font-weight:700;color:#f5f5f4;margin-bottom:4px">No customers yet</div><div style="font-size:13px">Add your first sample to get started.</div></div>';
+function buildCustomerRows(list) {
+  if (list.length === 0) {
+    return '<div class="empty"><div class="empty-icon">🌱</div><div class="empty-title">No customers yet</div>'
+      + '<div>Click <b>+ New Customer</b> to add one, or use <b>+ Add</b> to start with a soil sample.</div></div>';
+  }
   var html = '';
   list.forEach(function(c) {
-    var count = samples.filter(function(s){ return s.customerId === c.id; }).length;
-    var yrs = [...new Set(samples.filter(function(s){ return s.customerId === c.id; }).map(function(s){ return s.year; }))].sort().join(', ');
-    html += '<div class="customer-row" onclick="openCustomer(\''+c.id+'\')">'
-      + '<div><div class="customer-name">'+esc(c.name)+'</div>'
-      + '<div class="customer-sub">'+(c.field?esc(c.field)+' · ':'')+count+' sample'+(count!==1?'s':'')+(yrs?' · '+yrs:'')+'</div></div>'
+    var cs = samples.filter(function(s){ return s.customerId === c.id; });
+    var yrs = cs.map(function(s){ return s.year; }).filter(Boolean);
+    yrs = [...new Set(yrs)].sort().join(', ');
+    html += '<div class="customer-row" onclick="openCustomer(\'' + c.id + '\')">'
+      + '<div><div class="customer-name">' + esc(c.name) + '</div>'
+      + '<div class="customer-sub">' + (c.field ? esc(c.field) + ' · ' : '') + cs.length + ' sample' + (cs.length !== 1 ? 's' : '') + (yrs ? ' · ' + yrs : '') + '</div></div>'
       + '<div style="color:#78716c;font-size:20px">›</div></div>';
   });
   return html;
 }
 
-function filterCustomers() {
-  var q = document.getElementById('cust-search').value.toLowerCase();
-  var filtered = customers.filter(function(c) {
-    return c.name.toLowerCase().includes(q) || (c.field||'').toLowerCase().includes(q);
-  });
-  document.getElementById('customer-list').innerHTML = renderCustomerList(filtered);
+function filterCustomerList() {
+  var q = (document.getElementById('cust-search') || {}).value || '';
+  q = q.toLowerCase();
+  var filtered = q ? customers.filter(function(c) {
+    return c.name.toLowerCase().includes(q) || (c.field||'').toLowerCase().includes(q) || (c.city||'').toLowerCase().includes(q);
+  }) : customers;
+  var el = document.getElementById('customer-list');
+  if (el) el.innerHTML = buildCustomerRows(filtered);
 }
 
 // ══════════════════════════════════════════════════════
-// Customer Detail
+// Customers page
+// ══════════════════════════════════════════════════════
+function renderCustomers() {
+  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'
+    + '<div class="page-title">Customers</div>'
+    + '<button class="btn-green btn-sm no-print" onclick="showAddCustomer()">+ New Customer</button></div>'
+    + '<div class="page-sub">All customers and their soil test history.</div>';
+
+  html += '<div class="search-bar"><span style="color:#57534e">🔍</span>'
+    + '<input id="cust-search2" placeholder="Search customers..." oninput="filterCustomers2()" style="flex:1;border:none;outline:none;font-size:16px;background:transparent;color:#e7e5e4;font-family:sans-serif;min-height:28px"></div>';
+  html += '<div id="cust-list2">' + buildCustomerRows(customers) + '</div>';
+
+  setRoot(html);
+}
+
+function filterCustomers2() {
+  var q = (document.getElementById('cust-search2') || {}).value || '';
+  q = q.toLowerCase();
+  var filtered = q ? customers.filter(function(c) {
+    return c.name.toLowerCase().includes(q) || (c.field||'').toLowerCase().includes(q);
+  }) : customers;
+  var el = document.getElementById('cust-list2');
+  if (el) el.innerHTML = buildCustomerRows(filtered);
+}
+
+// ══════════════════════════════════════════════════════
+// Customer detail
 // ══════════════════════════════════════════════════════
 function openCustomer(id) {
-  selectedCustomer = customers.find(function(c){ return c.id === id; });
-  if (!selectedCustomer) return;
-  currentView = 'customer';
+  activeCustomerId = id;
+  var c = customers.find(function(x){ return x.id === id; });
+  if (!c) return;
+
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
 
-  var c = selectedCustomer;
-  var sorted = samples.filter(function(s){ return s.customerId === c.id; }).sort(function(a,b){ return a.year - b.year; });
+  var cs = samples.filter(function(s){ return s.customerId === id; }).sort(function(a,b){ return b.year - a.year; });
 
-  // Improvement score
-  var imp = 0, total = 0;
-  if (sorted.length >= 2) {
-    var prev = sorted[sorted.length - 2], curr = sorted[sorted.length - 1];
-    METRICS.forEach(function(m) {
-      if (m.infoOnly) return;
-      var pv = parseFloat(prev[m.key]), cv = parseFloat(curr[m.key]);
-      if (isNaN(pv) || isNaN(cv)) return;
-      total++;
-      var mid = (m.min + m.max) / 2;
-      if (cv >= m.min && cv <= m.max) imp++;
-      else if (!(pv >= m.min && pv <= m.max) && Math.abs(cv - mid) < Math.abs(pv - mid)) imp++;
-    });
-  }
-  var pct = total ? Math.round((imp/total)*100) : 0;
-  var color = pct >= 70 ? '#4ade80' : pct >= 40 ? '#fb923c' : '#f87171';
-
-  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">'
-    + '<div style="display:flex;align-items:center;gap:12px">'
-    + '<button class="btn-outline" onclick="showTab(\'dashboard\')">← Back</button>'
-    + '<div><div style="font-size:20px;font-weight:700;color:#f5f5f4">'+esc(c.name)+'</div>'
-    + '<div style="font-size:12px;color:#78716c;font-family:sans-serif">'+(c.field?esc(c.field):'')+(c.email?' · '+esc(c.email):'')+(c.phone?' · '+esc(c.phone):'')+'</div></div></div>'
-    + '<div style="display:flex;gap:8px;flex-wrap:wrap">'
-    + '<button class="btn-green btn-sm" onclick="addSampleFor(\''+c.id+'\')">+ Add Sample</button>'
-    + '<button class="btn-outline btn-sm no-print" onclick="showReportFor(\''+c.id+'\')">📄 Report</button>'
-    + '<button class="btn-danger btn-sm no-print" onclick="deleteCustomer(\''+c.id+'\')">Delete</button>'
+  var html = '<button class="back-btn" onclick="showPage(\'dashboard\')">&larr; Back to Dashboard</button>';
+  html += '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:6px">'
+    + '<div class="page-title">' + esc(c.name) + '</div>'
+    + '<div class="btn-row no-print" style="margin:0">'
+    + '<button class="btn-green btn-sm" onclick="startAddSampleForCustomer(\'' + id + '\')">+ Add Sample</button>'
+    + '<button class="btn-outline btn-sm" onclick="showEditCustomer(\'' + id + '\')">Edit</button>'
+    + '<button class="btn-danger btn-sm" onclick="confirmDeleteCustomer(\'' + id + '\')">Delete</button>'
     + '</div></div>';
 
-  if (sorted.length >= 2) {
-    html += '<div class="score-card" style="border:1px solid '+color+'33">'
-      + '<div class="score-pct" style="color:'+color+'">'+pct+'%</div>'
-      + '<div><div class="score-label">Metrics Improving</div><div class="score-sub">'+imp+' of '+total+' nutrients trending up</div></div></div>';
-  }
+  var info = [];
+  if (c.field)   info.push('Field: ' + esc(c.field));
+  if (c.address) info.push(esc(c.address) + (c.city ? ', ' + esc(c.city) : ''));
+  if (c.phone)   info.push(esc(c.phone));
+  if (c.email)   info.push(esc(c.email));
+  if (info.length) html += '<div class="page-sub">' + info.join(' · ') + '</div>';
 
-  // Recommendations table
-  html += '<div class="card"><div class="sec-title">Limestone & Nutrient Recommendations</div><div class="table-wrap"><table>'
-    + '<thead><tr><th>Recommendation</th>';
-  sorted.forEach(function(s){ html += '<th class="year-col">'+s.year+'</th>'; });
-  html += '<th>Notes</th></tr></thead><tbody>';
-  REC_ROWS.forEach(function(row) {
-    html += '<tr><td style="font-weight:600;color:#d6d3d1;white-space:nowrap;font-family:sans-serif;font-size:13px">'+row.label+'</td>';
-    sorted.forEach(function(s) { html += '<td class="center">'+recBadge(s[row.key])+'</td>'; });
-    html += '<td style="color:#78716c;font-size:11px;font-family:sans-serif;max-width:180px;line-height:1.5">'+row.note+'</td></tr>';
-  });
-  html += '</tbody></table></div></div>';
+  if (cs.length === 0) {
+    html += '<div class="empty"><div class="empty-icon">🧪</div><div class="empty-title">No samples yet</div>'
+      + '<div>Add the first soil test result for this customer.</div>'
+      + '<button class="btn-green btn-full no-print" onclick="startAddSampleForCustomer(\'' + id + '\')">+ Add Sample</button></div>';
+  } else {
+    // Build years columns
+    var years = cs.map(function(s){ return s.year; });
 
-  // Lab results table
-  html += '<div class="card"><div class="sec-title">Lab Results — Year over Year</div><div class="table-wrap"><table>';
-  html += '<thead><tr><th>Metric</th>';
-  sorted.forEach(function(s){ html += '<th class="year-col">'+s.year+'</th>'; });
-  html += '<th>Ideal</th></tr></thead><tbody>';
+    html += '<div class="card"><div class="table-wrap"><table><thead><tr>'
+      + '<th>Metric</th><th>Ideal Range</th>';
+    years.forEach(function(y) { html += '<th class="year-col">' + y + '</th>'; });
+    html += '</tr></thead><tbody>';
 
-  Object.entries(LAB_SECTIONS).forEach(function(entry) {
-    var section = entry[0], keys = entry[1];
-    html += '<tr class="section-row"><td colspan="'+(sorted.length+2)+'">'+section+'</td></tr>';
-    keys.forEach(function(key) {
-      var m = METRICS.find(function(x){ return x.key === key; });
-      if (!m) return;
-      html += '<tr><td style="min-width:130px"><div class="metric-label">'+m.label+'</div>'
-        + '<button style="font-size:10px;color:#4ade8066;cursor:pointer;font-family:sans-serif;text-decoration:underline dotted;border:none;background:none;padding:0" onclick="showInfoModal(\''+m.key+'\')">what is this?</button></td>';
-      sorted.forEach(function(s) { html += '<td class="center">'+statusBadge(s[key], m)+'</td>'; });
-      html += '<td class="ideal-range">'+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</td></tr>';
+    LAB_SECTIONS.forEach(function(section) {
+      var mets = METRICS.filter(function(m){ return m.section === section; });
+      html += '<tr class="section-row"><td colspan="' + (2 + years.length) + '">' + section + '</td></tr>';
+      mets.forEach(function(m) {
+        html += '<tr>';
+        html += '<td><span class="metric-label" style="cursor:pointer;text-decoration:underline dotted" onclick="showMetricInfo(\'' + m.key + '\')">' + m.label + '</span></td>';
+        html += '<td class="ideal-range">' + (m.infoOnly ? 'info' : (m.optMin + '–' + m.optMax + ' ' + m.unit).trim()) + '</td>';
+        cs.forEach(function(s) {
+          var val = s[m.key];
+          html += '<td class="center">' + fmt(val) + ' ' + statusBadge(m, val) + '</td>';
+        });
+        html += '</tr>';
+      });
     });
-  });
-  html += '</tbody></table></div></div>';
 
-  // Sample history with delete
-  html += '<div class="card no-print"><div class="sec-title">Sample History</div>';
-  sorted.slice().reverse().forEach(function(s) {
-    html += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1e1e1e">'
-      + '<span style="background:#4ade8018;color:#4ade80;padding:4px 10px;border-radius:6px;font-weight:700;font-size:13px;font-family:monospace">'+s.year+'</span>'
-      + '<span style="flex:1;font-size:12px;color:#78716c;font-family:sans-serif">'+formatDate(s.createdAt)+'</span>'
-      + '<button class="btn-danger btn-sm" onclick="deleteSample(\''+s.id+'\','+s.year+')">Delete</button></div>';
-  });
-  html += '</div>';
+    // Recommendations
+    html += '<tr class="section-row"><td colspan="' + (2 + years.length) + '">Recommendations</td></tr>';
+    REC_KEYS.forEach(function(r) {
+      html += '<tr><td class="metric-label" style="font-family:sans-serif">' + r.label + '</td><td></td>';
+      cs.forEach(function(s) {
+        var v = s[r.key];
+        html += '<td class="center">' + (v !== undefined && v !== null && v !== '' ? '<b>' + esc(v) + '</b>' : '<span class="badge-gray">—</span>') + '</td>';
+      });
+      html += '</tr>';
+    });
 
-  setContent(html);
-}
+    html += '</tbody></table></div>';
 
-function addSampleFor(customerId) {
-  prefillData = { customerId: customerId };
-  renderSampleForm();
-}
-
-// ══════════════════════════════════════════════════════
-// Add Sample — Method Selection
-// ══════════════════════════════════════════════════════
-function renderAddSample() {
-  var html = '<div style="font-size:22px;font-weight:700;color:#f5f5f4;margin-bottom:20px">Add Soil Sample</div>';
-
-  if (customers.length === 0) {
-    html += '<div class="card" style="border-color:#fb923c33;padding:14px;margin-bottom:16px;color:#fb923c;font-size:13px;font-family:sans-serif">⚠ Add a customer first before recording a sample.</div>';
-  }
-
-  html += '<div class="scan-option primary" onclick="document.getElementById(\'camera-input\').click()">'
-    + '<div class="icon">📷</div><div><div class="title">Scan Report</div>'
-    + '<div class="desc">Photograph a Penn State soil test — AI fills in all values</div></div></div>';
-
-  html += '<div class="scan-option" onclick="document.getElementById(\'file-input\').click()">'
-    + '<div class="icon">🖼</div><div><div class="title">Upload Photo</div>'
-    + '<div class="desc">Choose an existing photo from your device</div></div></div>';
-
-  html += '<div class="scan-option" onclick="prefillData=null;renderSampleForm()">'
-    + '<div class="icon">✏️</div><div><div class="title">Enter Manually</div>'
-    + '<div class="desc">Type in all soil lab values by hand</div></div></div>';
-
-  html += '<div class="card" style="margin-top:16px"><div class="sec-title">Add New Customer</div>'
-    + '<div class="grid-2">'
-    + '<div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="nc-name" placeholder="John Smith"></div>'
-    + '<div class="form-group"><label class="form-label">Field / Property</label><input class="form-input" id="nc-field" placeholder="Front lawn"></div>'
-    + '<div class="form-group"><label class="form-label">Email</label><input class="form-input" id="nc-email" type="email"></div>'
-    + '<div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="nc-phone" type="tel"></div>'
-    + '<div class="form-group"><label class="form-label">Address</label><input class="form-input" id="nc-address"></div>'
-    + '<div class="form-group"><label class="form-label">City</label><input class="form-input" id="nc-city"></div>'
-    + '</div><button class="btn-green btn-full" onclick="saveCustomer()">Save Customer</button></div>';
-
-  setContent(html);
-}
-
-// ══════════════════════════════════════════════════════
-// Photo Upload → Gemini Extraction
-// ══════════════════════════════════════════════════════
-function handleFileUpload(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  event.target.value = '';
-
-  setContent('<div class="loading"><div class="spinner"></div><p style="margin-top:12px;font-size:15px">🤖 Reading soil report...</p><p style="color:#57534e;font-size:12px;margin-top:6px">AI is extracting values from your image</p></div>');
-
-  compressImage(file, function(dataUrl) {
-    var base64 = dataUrl.split(',')[1];
-    google.script.run
-      .withSuccessHandler(function(result) {
-        if (result.success && result.data) {
-          prefillData = result.data;
-          prefillData._aiExtracted = true;
-          notify('Data extracted! Review and save below.');
-        } else {
-          notify('Could not extract: ' + (result.error || 'Unknown error'), 'error');
-          prefillData = null;
-        }
-        renderSampleForm();
-      })
-      .withFailureHandler(function(err) {
-        notify('Extraction error: ' + (err.message || err), 'error');
-        prefillData = null;
-        renderSampleForm();
-      })
-      .extractSoilData(base64, file.type || 'image/jpeg');
-  });
-}
-
-function compressImage(file, callback) {
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var MAX = 800;
-      var w = img.width, h = img.height;
-      if (w > MAX || h > MAX) {
-        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-        else { w = Math.round(w * MAX / h); h = MAX; }
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      callback(canvas.toDataURL('image/jpeg', 0.5));
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-// ══════════════════════════════════════════════════════
-// Sample Entry Form
-// ══════════════════════════════════════════════════════
-function renderSampleForm() {
-  currentView = 'sample-form';
-  var p = prefillData || {};
-  var selectedCustId = p.customerId || '';
-
-  var html = '<div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">'
-    + '<button class="btn-outline" onclick="showTab(\'add\')">← Back</button>'
-    + '<div style="font-size:20px;font-weight:700;color:#f5f5f4">Add Soil Sample</div></div>';
-
-  if (p._aiExtracted) {
-    html += '<div class="card" style="background:#14532d44;border-color:#4ade8044;color:#4ade80;font-size:13px;font-family:sans-serif;padding:12px">✅ Values extracted from photo — review and confirm below</div>';
-  }
-
-  html += '<div class="card"><div class="sec-title">Details</div>'
-    + '<div class="grid-2">'
-    + '<div class="form-group"><label class="form-label">Customer *</label>'
-    + '<select class="form-input" id="s-customer"><option value="">— Select —</option>';
-  customers.forEach(function(c) {
-    html += '<option value="'+c.id+'"'+(c.id===selectedCustId?' selected':'')+'>'+esc(c.name)+(c.field?' ('+esc(c.field)+')':'')+'</option>';
-  });
-  html += '</select></div>'
-    + '<div class="form-group"><label class="form-label">Year *</label>'
-    + '<input class="form-input" id="s-year" type="number" value="'+(p.Year || new Date().getFullYear())+'"></div></div>';
-
-  if (p.CustomerName && !selectedCustId) {
-    html += '<div style="font-size:12px;color:#fb923c;font-family:sans-serif;margin-top:-4px;margin-bottom:8px">AI found: "'+esc(p.CustomerName)+'" — select matching customer above</div>';
-  }
-  html += '</div>';
-
-  // Limestone & Recs
-  html += '<div class="card"><div class="sec-title">Limestone & Nutrient Recommendations</div>'
-    + '<div class="form-group"><label class="form-label">Limestone (lb/1000 ft²)</label>'
-    + '<select class="form-input" id="s-limestoneLbs"><option value="">None</option>';
-  [25,50,75,100,125,150,175,200,225,250].forEach(function(v) {
-    html += '<option value="'+v+'"'+(String(p.limestoneLbs)===String(v)?' selected':'')+'>'+v+' lb/1000 ft²</option>';
-  });
-  html += '</select></div><div class="grid-3">'
-    + formField('s-recN', 'Nitrogen (N)', p.recN)
-    + formField('s-recP', 'Phosphorus (P₂O₅)', p.recP)
-    + formField('s-recK', 'Potassium (K₂O)', p.recK)
-    + '</div></div>';
-
-  // Lab values
-  html += '<div class="card"><div class="sec-title">Lab Results</div>';
-  Object.entries(LAB_SECTIONS).forEach(function(entry) {
-    html += '<div class="sub-head">'+entry[0]+'</div><div class="grid-2">';
-    entry[1].forEach(function(key) {
-      var m = METRICS.find(function(x){ return x.key === key; });
-      if (!m) return;
-      html += '<div class="form-group"><label class="form-label">'+m.label+(m.unit?' ('+m.unit+')':'')
-        + ' <button style="font-size:10px;color:#4ade8066;cursor:pointer;border:none;background:none;padding:0" onclick="showInfoModal(\''+m.key+'\')">ⓘ</button></label>'
-        + '<input class="form-input" id="s-'+m.key+'" type="number" step="any" placeholder="'+m.min+'–'+m.max+'" value="'+(p[m.key]!=null?p[m.key]:'')+'"></div>';
+    // Delete buttons per sample
+    html += '<div class="btn-row no-print" style="margin-top:16px">';
+    cs.forEach(function(s) {
+      html += '<button class="btn-danger btn-sm" onclick="confirmDeleteSample(\'' + s.id + '\')">'
+        + 'Delete ' + s.year + '</button>';
     });
     html += '</div>';
+    html += '</div>';
+
+    // Print report button
+    html += '<button class="btn-outline no-print" style="margin-bottom:8px" onclick="printCustomerReport(\'' + id + '\')">🖨 Print Report</button>';
+  }
+
+  setRoot(html);
+}
+
+// ══════════════════════════════════════════════════════
+// Add / Edit Customer
+// ══════════════════════════════════════════════════════
+function showAddCustomer() {
+  showCustomerForm(null);
+}
+function showEditCustomer(id) {
+  showCustomerForm(id);
+}
+
+function showCustomerForm(id) {
+  var c = id ? customers.find(function(x){ return x.id === id; }) : null;
+  var v = function(k) { return c ? esc(c[k] || '') : ''; };
+  var html = '<button class="back-btn" onclick="history.go(-1); showPage(\'customers\')">&larr; Back</button>';
+  html += '<div class="page-title">' + (c ? 'Edit Customer' : 'New Customer') + '</div>';
+  html += '<div class="card">';
+  html += '<div class="form-group"><label class="form-label">Customer Name *</label>'
+    + '<input class="form-input" id="cf-name" value="' + v('name') + '" placeholder="e.g. Johnson Farm"></div>';
+  html += '<div class="grid-2">';
+  html += '<div class="form-group"><label class="form-label">Field / Property</label>'
+    + '<input class="form-input" id="cf-field" value="' + v('field') + '" placeholder="Back 40"></div>';
+  html += '<div class="form-group"><label class="form-label">City</label>'
+    + '<input class="form-input" id="cf-city" value="' + v('city') + '" placeholder="State College"></div>';
+  html += '</div>';
+  html += '<div class="form-group"><label class="form-label">Address</label>'
+    + '<input class="form-input" id="cf-address" value="' + v('address') + '" placeholder="123 Creek Rd"></div>';
+  html += '<div class="grid-2">';
+  html += '<div class="form-group"><label class="form-label">Phone</label>'
+    + '<input class="form-input" id="cf-phone" type="tel" value="' + v('phone') + '" placeholder="814-555-0101"></div>';
+  html += '<div class="form-group"><label class="form-label">Email</label>'
+    + '<input class="form-input" id="cf-email" type="email" value="' + v('email') + '" placeholder="customer@example.com"></div>';
+  html += '</div>';
+  html += '<button class="btn-green btn-full" onclick="saveCustomerForm(' + (c ? '\'' + c.id + '\'' : 'null') + ')">'
+    + (c ? 'Save Changes' : 'Add Customer') + '</button>';
+  if (c) {
+    html += '<button class="btn-danger btn-full" style="margin-top:8px" onclick="confirmDeleteCustomer(\'' + c.id + '\')">Delete Customer</button>';
+  }
+  html += '</div>';
+  setRoot(html);
+}
+
+function saveCustomerForm(existingId) {
+  var name = document.getElementById('cf-name').value.trim();
+  if (!name) { showNotification('Customer name is required.', 'error'); return; }
+
+  if (existingId) {
+    var c = customers.find(function(x){ return x.id === existingId; });
+    if (c) {
+      c.name    = name;
+      c.field   = document.getElementById('cf-field').value.trim();
+      c.city    = document.getElementById('cf-city').value.trim();
+      c.address = document.getElementById('cf-address').value.trim();
+      c.phone   = document.getElementById('cf-phone').value.trim();
+      c.email   = document.getElementById('cf-email').value.trim();
+    }
+  } else {
+    customers.push({
+      id:        genId(),
+      name:      name,
+      field:     document.getElementById('cf-field').value.trim(),
+      city:      document.getElementById('cf-city').value.trim(),
+      address:   document.getElementById('cf-address').value.trim(),
+      phone:     document.getElementById('cf-phone').value.trim(),
+      email:     document.getElementById('cf-email').value.trim(),
+      createdAt: new Date().toISOString()
+    });
+  }
+  saveCustomers();
+  showNotification(existingId ? 'Customer updated.' : 'Customer added.', 'success');
+  if (existingId) { openCustomer(existingId); } else { renderDashboard(); }
+}
+
+// ══════════════════════════════════════════════════════
+// Add Sample — choose customer then scan or manual
+// ══════════════════════════════════════════════════════
+function startAddSample() {
+  scanPrefill = null;
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('nav-add').classList.add('active');
+  renderAddSampleStep1();
+}
+
+function startAddSampleForCustomer(customerId) {
+  activeCustomerId = customerId;
+  scanPrefill = null;
+  renderScanStep();
+}
+
+function renderAddSampleStep1() {
+  if (customers.length === 0) {
+    var html = '<div class="page-title">Add Sample</div><div class="page-sub">Create a customer first.</div>'
+      + '<div class="card"><div class="empty"><div class="empty-icon">👨‍🌾</div><div class="empty-title">No customers yet</div>'
+      + '<div>Add a customer before logging a sample.</div></div>'
+      + '<button class="btn-green btn-full" onclick="showCustomerForm(null)">+ Add Customer</button></div>';
+    setRoot(html);
+    return;
+  }
+  var html = '<div class="page-title">Add Sample</div>'
+    + '<div class="page-sub">Choose a customer to log a soil test for.</div>'
+    + '<div class="card"><div class="sec-title">Select Customer</div>';
+  customers.forEach(function(c) {
+    html += '<div class="customer-row" onclick="activeCustomerId=\'' + c.id + '\';renderScanStep()">'
+      + '<div><div class="customer-name">' + esc(c.name) + '</div>'
+      + '<div class="customer-sub">' + (c.field ? esc(c.field) : '') + '</div></div>'
+      + '<div style="color:#78716c;font-size:20px">›</div></div>';
   });
   html += '</div>';
-
-  html += '<button class="btn-green btn-full" onclick="saveSampleForm()">💾 Save to Google Sheets</button>';
-  setContent(html);
-}
-
-function formField(id, label, val) {
-  return '<div class="form-group"><label class="form-label">'+label+'</label>'
-    + '<input class="form-input" id="'+id+'" placeholder="None" value="'+(val||'')+'"></div>';
-}
-
-function saveSampleForm() {
-  var custId = document.getElementById('s-customer').value;
-  var year = parseInt(document.getElementById('s-year').value, 10);
-  if (!custId) { notify('Please select a customer.', 'error'); return; }
-  if (isNaN(year)) { notify('Please enter a valid year.', 'error'); return; }
-
-  var data = { customerId: custId, year: year };
-  METRICS.forEach(function(m) {
-    var v = document.getElementById('s-'+m.key).value.trim();
-    data[m.key] = v === '' ? undefined : parseFloat(v);
-  });
-  data.limestoneLbs = document.getElementById('s-limestoneLbs').value || undefined;
-  data.recN = document.getElementById('s-recN').value.trim() || undefined;
-  data.recP = document.getElementById('s-recP').value.trim() || undefined;
-  data.recK = document.getElementById('s-recK').value.trim() || undefined;
-
-  google.script.run
-    .withSuccessHandler(function(result) {
-      data.id = result.id;
-      data.createdAt = new Date().toISOString();
-      samples.push(data);
-      prefillData = null;
-      notify('Sample saved!');
-      if (selectedCustomer) { openCustomer(selectedCustomer.id); }
-      else { showTab('dashboard'); }
-    })
-    .withFailureHandler(function(err) { notify('Could not save: '+(err.message||err), 'error'); })
-    .saveSample(data);
+  setRoot(html);
 }
 
 // ══════════════════════════════════════════════════════
-// Save / Delete
+// Scan step
 // ══════════════════════════════════════════════════════
-function saveCustomer() {
-  var name = document.getElementById('nc-name').value.trim();
-  if (!name) { notify('Please enter a name.', 'error'); return; }
-  var data = {
-    name: name,
-    field: document.getElementById('nc-field').value.trim(),
-    email: document.getElementById('nc-email').value.trim(),
-    phone: document.getElementById('nc-phone').value.trim(),
-    address: document.getElementById('nc-address').value.trim(),
-    city: document.getElementById('nc-city').value.trim()
-  };
-  google.script.run
-    .withSuccessHandler(function(result) {
-      data.id = result.id;
-      customers.push(data);
-      notify('Customer saved!');
-      ['nc-name','nc-field','nc-email','nc-phone','nc-address','nc-city'].forEach(function(id){ document.getElementById(id).value = ''; });
-    })
-    .withFailureHandler(function(err) { notify('Could not save: '+(err.message||err), 'error'); })
-    .saveCustomer(data);
+function renderScanStep() {
+  var c = customers.find(function(x){ return x.id === activeCustomerId; });
+  var html = '<button class="back-btn" onclick="startAddSample()">&larr; Back</button>';
+  html += '<div class="page-title">Add Sample' + (c ? ' — ' + esc(c.name) : '') + '</div>'
+    + '<div class="page-sub">Scan a soil report image or enter values manually.</div>';
+
+  var apiKey = getApiKey();
+  if (!apiKey) {
+    html += '<div class="ai-banner">⚠️ No API key set. Go to <b>Settings</b> to add your Anthropic key for AI scanning. You can still enter values manually below.</div>';
+  }
+
+  html += '<div class="scan-option primary" onclick="triggerFileInput()">'
+    + '<div class="icon">📷</div>'
+    + '<div><div class="title">Scan Soil Report</div><div class="desc">Upload a photo — AI reads the values automatically.</div></div></div>';
+  html += '<div class="scan-option" onclick="renderManualForm(null)">'
+    + '<div class="icon">✏️</div>'
+    + '<div><div class="title">Enter Manually</div><div class="desc">Type in all values from the report by hand.</div></div></div>';
+
+  setRoot(html);
 }
 
-function deleteCustomer(id) {
-  if (!confirm('Delete this customer and all their samples? This cannot be undone.')) return;
-  google.script.run
-    .withSuccessHandler(function() {
-      customers = customers.filter(function(c){ return c.id !== id; });
-      samples = samples.filter(function(s){ return s.customerId !== id; });
-      notify('Customer deleted.');
-      showTab('dashboard');
-    })
-    .withFailureHandler(function(err) { notify('Error: '+(err.message||err), 'error'); })
-    .deleteCustomer(id);
-}
-
-function deleteSample(id, year) {
-  if (!confirm('Delete the '+year+' sample? This cannot be undone.')) return;
-  google.script.run
-    .withSuccessHandler(function() {
-      samples = samples.filter(function(s){ return s.id !== id; });
-      notify('Sample deleted.');
-      if (selectedCustomer) openCustomer(selectedCustomer.id);
-    })
-    .withFailureHandler(function(err) { notify('Error: '+(err.message||err), 'error'); })
-    .deleteSample(id);
+function triggerFileInput() {
+  document.getElementById('file-input').click();
 }
 
 // ══════════════════════════════════════════════════════
-// Reports
+// Image handling & AI extraction
 // ══════════════════════════════════════════════════════
-function renderReportPage() {
-  var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px" class="no-print">'
-    + '<div style="font-size:22px;font-weight:700;color:#f5f5f4">Generate Customer Report</div>'
-    + '<button class="btn-green" onclick="window.print()">🖨️ Print / Save PDF</button></div>';
-
-  html += '<div class="card no-print"><div class="sec-title">Select Customer</div>'
-    + '<select class="form-input" id="report-select" onchange="renderReport()"><option value="">-- Select a customer --</option>';
-  customers.forEach(function(c) { html += '<option value="'+c.id+'">'+esc(c.name)+'</option>'; });
-  html += '</select></div><div id="report-output"></div>';
-
-  setContent(html);
-}
-
-function showReportFor(id) {
-  showTab('report');
-  setTimeout(function() {
-    var sel = document.getElementById('report-select');
-    if (sel) { sel.value = id; renderReport(); }
-  }, 100);
-}
-
-function renderReport() {
-  var id = document.getElementById('report-select').value;
-  var output = document.getElementById('report-output');
-  if (!id) { output.innerHTML = ''; return; }
-
-  var c = customers.find(function(x){ return x.id === id; });
-  var sorted = samples.filter(function(s){ return s.customerId === id; }).sort(function(a,b){ return a.year - b.year; });
-  if (!c || sorted.length === 0) {
-    output.innerHTML = '<div class="card" style="color:#78716c;font-family:sans-serif">No samples found.</div>';
+function handleImageFile(file) {
+  if (!file.type.startsWith('image/')) {
+    showNotification('Please choose an image file.', 'error');
+    return;
+  }
+  var apiKey = getApiKey();
+  if (!apiKey) {
+    showNotification('Add your Anthropic API key in Settings first.', 'error');
     return;
   }
 
-  var html = '<div class="report-paper">'
-    + '<div class="report-header"><div>'
-    + '<div class="report-logo"><span>LAWNS</span><span>PLANTS</span><span>&amp; PESTS</span></div>'
-    + '<div style="font-size:11px;color:#666;margin-top:6px">Soil Health Report</div></div>'
-    + '<div class="report-customer"><div class="report-customer-name">'+esc(c.name)+'</div>'
-    + (c.field?'<div class="report-customer-sub">'+esc(c.field)+'</div>':'')
-    + (c.address?'<div class="report-customer-sub">'+esc(c.address)+(c.city?', '+esc(c.city):'')+'</div>':'')
-    + '<div class="report-customer-sub" style="margin-top:4px;color:#999">Generated: '+new Date().toLocaleDateString()+'</div>'
-    + '</div></div>';
+  var c = customers.find(function(x){ return x.id === activeCustomerId; });
+  var html = '<button class="back-btn" onclick="renderScanStep()">&larr; Back</button>';
+  html += '<div class="page-title">Scanning Report' + (c ? ' — ' + esc(c.name) : '') + '</div>';
+  html += '<div class="loading"><div class="spinner"></div><p style="margin-top:12px;font-family:sans-serif">AI is reading your report...<br><span style="font-size:13px;color:#57534e">This usually takes 10–20 seconds.</span></p></div>';
+  setRoot(html);
 
-  // Recommendations
-  html += '<div style="margin-bottom:20px"><div class="report-section-title">Limestone & Nutrient Recommendations</div>'
-    + '<table class="report-table"><thead><tr><th>Item</th>';
-  sorted.forEach(function(s){ html += '<th class="center">'+s.year+'</th>'; });
-  html += '</tr></thead><tbody>';
-  [{key:'limestoneLbs',label:'Limestone (lb/1000 ft²)'},{key:'recN',label:'Nitrogen (N)'},{key:'recP',label:'Phosphorus (P₂O₅)'},{key:'recK',label:'Potassium (K₂O)'}].forEach(function(row) {
-    html += '<tr><td style="font-weight:600">'+row.label+'</td>';
-    sorted.forEach(function(s) {
-      var v = s[row.key];
-      var isNone = !v || String(v).toLowerCase() === 'none' || v === '0';
-      html += '<td class="center" style="color:'+(isNone?'#16a34a':'#d97706')+'">'+(v||'None')+'</td>';
+  compressToLimit(file, 65000, function(b64, mime) {
+    callClaude(b64, mime || file.type, function(result) {
+      if (!result.success) {
+        showNotification('Extraction failed: ' + result.error, 'error', 6000);
+        renderManualForm(null);
+        return;
+      }
+      scanPrefill = result.data;
+      renderManualForm(result.data);
     });
-    html += '</tr>';
   });
-  html += '</tbody></table></div>';
+}
 
-  // Soil test results
-  html += '<div><div class="report-section-title">Soil Test Results</div>'
-    + '<table class="report-table"><thead><tr><th>Metric</th><th>Ideal Range</th>';
-  sorted.forEach(function(s){ html += '<th class="center">'+s.year+'</th>'; });
-  html += '</tr></thead><tbody>';
-  METRICS.forEach(function(m) {
-    html += '<tr><td style="font-weight:600">'+m.label+'</td>'
-      + '<td style="color:#666;font-family:monospace;font-size:11px">'+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</td>';
-    sorted.forEach(function(s) {
-      var v = parseFloat(s[m.key]);
-      var clr = isNaN(v) ? '#999' : (v >= m.min && v <= m.max) ? '#16a34a' : v < m.min ? '#dc2626' : '#d97706';
-      html += '<td class="center" style="color:'+clr+'">'+(s[m.key]||'—')+'</td>';
+function compressToLimit(file, maxChars, cb) {
+  var steps = [
+    { w: 1800, q: 0.82 }, { w: 1600, q: 0.75 }, { w: 1400, q: 0.68 },
+    { w: 1200, q: 0.60 }, { w: 1000, q: 0.55 }, { w: 900,  q: 0.50 },
+    { w: 800,  q: 0.45 }
+  ];
+  var idx = 0;
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  var img = new Image();
+  var url = URL.createObjectURL(file);
+  img.onload = function() {
+    URL.revokeObjectURL(url);
+    function tryStep() {
+      if (idx >= steps.length) {
+        doCompress(steps[steps.length - 1].w, steps[steps.length - 1].q);
+        return;
+      }
+      doCompress(steps[idx].w, steps[idx].q);
+    }
+    function doCompress(maxW, q) {
+      var scale = Math.min(1, maxW / Math.max(img.width, img.height));
+      canvas.width  = Math.round(img.width  * scale);
+      canvas.height = Math.round(img.height * scale);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', q);
+      var b64 = dataUrl.split(',')[1];
+      if (b64.length <= maxChars || idx >= steps.length - 1) {
+        cb(b64, 'image/jpeg');
+      } else {
+        idx++;
+        tryStep();
+      }
+    }
+    tryStep();
+  };
+  img.onerror = function() {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64 = e.target.result.split(',')[1];
+      cb(b64, file.type);
+    };
+    reader.readAsDataURL(file);
+  };
+  img.src = url;
+}
+
+function callClaude(imageBase64, mimeType, cb) {
+  var apiKey = getApiKey();
+  if (!apiKey) { cb({ success: false, error: 'No API key configured.' }); return; }
+
+  var prompt = 'Extract soil test data from this Penn State Extension soil report image. '
+    + 'Return ONLY valid JSON with these exact keys:\n'
+    + '{"CustomerName":"","Field":"","Year":"","pH":null,"phosphorus":null,"organicMatter":null,'
+    + '"acidity":null,"potassium":null,"magnesium":null,"calcium":null,"cec":null,'
+    + '"satK":null,"satMg":null,"satCa":null,"limestoneLbs":null,"recN":null,"recP":null,"recK":null}\n\n'
+    + 'CustomerName = name from SOIL TEST REPORT FOR line.\n'
+    + 'Field = FIELD ID value.\n'
+    + 'Year = 4-digit year from DATE field.\n'
+    + 'pH = soil pH number.\n'
+    + 'phosphorus = P in lb/A.\n'
+    + 'organicMatter = Organic Matter %.\n'
+    + 'acidity = Buffer Acidity in meq/100g.\n'
+    + 'potassium = K in meq/100g.\n'
+    + 'magnesium = Mg in meq/100g.\n'
+    + 'calcium = Ca in meq/100g.\n'
+    + 'cec = CEC in meq/100g.\n'
+    + 'satK = K Saturation %.\n'
+    + 'satMg = Mg Saturation %.\n'
+    + 'satCa = Ca Saturation %.\n'
+    + 'limestoneLbs = Limestone rec as number (lb/1000 sq ft) or null.\n'
+    + 'recN = Nitrogen rec as written (e.g. "1.5 lb") or null.\n'
+    + 'recP = Phosphorus rec as written or null.\n'
+    + 'recK = Potassium rec as written or null.\n'
+    + 'Use null for any field not found. Return ONLY the JSON object, nothing else.';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'content-type': 'application/json',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      messages: [{
+        role: 'user',
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: mimeType, data: imageBase64 } },
+          { type: 'text', text: prompt }
+        ]
+      }]
+    }),
+    signal: AbortSignal.timeout ? AbortSignal.timeout(55000) : undefined
+  })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(t) {
+        cb({ success: false, error: 'API error ' + r.status + ': ' + t.substring(0, 200) });
+      });
+    }
+    return r.json().then(function(json) {
+      var textContent = (json.content || []).find(function(c){ return c.type === 'text'; });
+      if (!textContent) { cb({ success: false, error: 'No text in AI response.' }); return; }
+      var raw = textContent.text.trim();
+      var match = raw.match(/\{[\s\S]*\}/);
+      try {
+        cb({ success: true, data: JSON.parse(match ? match[0] : raw) });
+      } catch(e) {
+        cb({ success: false, error: 'Could not parse response: ' + e.message });
+      }
     });
-    html += '</tr>';
+  })
+  .catch(function(e) {
+    cb({ success: false, error: e.message || String(e) });
   });
-  html += '</tbody></table></div>';
-
-  html += '<div class="report-footer">'
-    + '<div style="font-size:11px;color:#999">🟢 Optimal &nbsp; 🟠 Above optimal &nbsp; 🔴 Below optimal</div>'
-    + '<div style="font-size:12px;color:#2d5a1b;font-weight:700">Lawns Plants & Pests LLC</div></div></div>';
-
-  output.innerHTML = html;
 }
 
 // ══════════════════════════════════════════════════════
-// Info Modal
+// Manual entry form (also used after AI scan)
 // ══════════════════════════════════════════════════════
-function showInfoModal(key) {
+function renderManualForm(prefill) {
+  var c = customers.find(function(x){ return x.id === activeCustomerId; });
+  var p = prefill || {};
+  var html = '<button class="back-btn" onclick="renderScanStep()">&larr; Back</button>';
+  html += '<div class="page-title">' + (prefill ? 'Review Extracted Data' : 'Enter Sample Data') + (c ? ' — ' + esc(c.name) : '') + '</div>';
+
+  if (prefill) {
+    html += '<div class="ai-success-banner">✓ AI extracted values below. Review and correct as needed before saving.</div>';
+    var info = [];
+    if (p.CustomerName) info.push('<div><strong>Name:</strong> ' + esc(p.CustomerName) + '</div>');
+    if (p.Field)  info.push('<div><strong>Field:</strong> ' + esc(p.Field) + '</div>');
+    if (p.Year)   info.push('<div><strong>Year:</strong> ' + esc(p.Year) + '</div>');
+    if (info.length) html += '<div class="extracted-info">' + info.join('') + '</div>';
+  }
+
+  function fv(k) {
+    var v = p[k];
+    return (v !== null && v !== undefined && v !== '') ? String(v) : '';
+  }
+  var yearNow = new Date().getFullYear();
+
+  html += '<div class="card">';
+  html += '<div class="form-group"><label class="form-label">Year *</label>'
+    + '<input class="form-input" id="sf-year" type="number" value="' + (fv('Year') || yearNow) + '" min="1990" max="2099"></div>';
+
+  LAB_SECTIONS.forEach(function(section) {
+    html += '<div class="sub-head">' + section + '</div><div class="grid-3">';
+    METRICS.filter(function(m){ return m.section === section; }).forEach(function(m) {
+      html += '<div class="form-group"><label class="form-label">' + m.label;
+      if (m.unit) html += ' <span style="color:#57534e;font-weight:400">' + m.unit + '</span>';
+      html += '</label><input class="form-input" id="sf-' + m.key + '" type="number" step="any" value="' + fv(m.key) + '" placeholder="—"></div>';
+    });
+    html += '</div>';
+  });
+
+  html += '<div class="sub-head">Recommendations</div><div class="grid-2">';
+  REC_KEYS.forEach(function(r) {
+    html += '<div class="form-group"><label class="form-label">' + r.label + '</label>'
+      + '<input class="form-input" id="sf-' + r.key + '" value="' + fv(r.key) + '" placeholder="—"></div>';
+  });
+  html += '</div>';
+
+  html += '<div class="form-group"><label class="form-label">Notes</label>'
+    + '<textarea class="form-input" id="sf-notes" placeholder="Any observations...">' + fv('notes') + '</textarea></div>';
+
+  html += '<button class="btn-green btn-full" onclick="saveSampleForm()">Save Sample</button>';
+  html += '</div>';
+  setRoot(html);
+}
+
+function saveSampleForm() {
+  var year = parseInt(document.getElementById('sf-year').value);
+  if (!year || year < 1990 || year > 2099) {
+    showNotification('Please enter a valid year (1990–2099).', 'error');
+    return;
+  }
+  if (!activeCustomerId) {
+    showNotification('No customer selected.', 'error');
+    return;
+  }
+
+  var sample = {
+    id:         genId(),
+    customerId: activeCustomerId,
+    year:       year,
+    notes:      document.getElementById('sf-notes').value.trim(),
+    createdAt:  new Date().toISOString()
+  };
+
+  METRICS.forEach(function(m) {
+    var raw = document.getElementById('sf-' + m.key).value.trim();
+    sample[m.key] = raw !== '' ? parseFloat(raw) : null;
+  });
+
+  REC_KEYS.forEach(function(r) {
+    var raw = document.getElementById('sf-' + r.key).value.trim();
+    sample[r.key] = raw !== '' ? raw : null;
+  });
+
+  samples.push(sample);
+  saveSamples();
+  showNotification('Sample saved for ' + year + '.', 'success');
+  openCustomer(activeCustomerId);
+}
+
+// ══════════════════════════════════════════════════════
+// Delete
+// ══════════════════════════════════════════════════════
+function confirmDeleteCustomer(id) {
+  var c = customers.find(function(x){ return x.id === id; });
+  if (!c) return;
+  var cs = samples.filter(function(s){ return s.customerId === id; }).length;
+  showConfirm(
+    'Delete ' + c.name + '?',
+    'This will permanently delete the customer and all ' + cs + ' sample' + (cs !== 1 ? 's' : '') + '.',
+    function() {
+      customers = customers.filter(function(x){ return x.id !== id; });
+      samples   = samples.filter(function(s){ return s.customerId !== id; });
+      saveCustomers(); saveSamples();
+      showNotification('Customer deleted.', 'success');
+      renderDashboard();
+    }
+  );
+}
+
+function confirmDeleteSample(id) {
+  var s = samples.find(function(x){ return x.id === id; });
+  if (!s) return;
+  showConfirm(
+    'Delete ' + s.year + ' sample?',
+    'This will permanently remove this soil test result.',
+    function() {
+      var cid = s.customerId;
+      samples = samples.filter(function(x){ return x.id !== id; });
+      saveSamples();
+      showNotification('Sample deleted.', 'success');
+      openCustomer(cid);
+    }
+  );
+}
+
+function showConfirm(title, msg, onYes) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  pendingConfirmFn = onYes;
+  document.getElementById('confirm-box').classList.add('visible');
+  document.getElementById('confirm-yes').onclick = function() {
+    closeConfirm();
+    if (pendingConfirmFn) pendingConfirmFn();
+  };
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-box').classList.remove('visible');
+  pendingConfirmFn = null;
+}
+
+// ══════════════════════════════════════════════════════
+// Metric info modal
+// ══════════════════════════════════════════════════════
+function showMetricInfo(key) {
   var m = METRICS.find(function(x){ return x.key === key; });
   if (!m) return;
-  var html = '<button class="modal-close" onclick="document.getElementById(\'info-modal\').classList.remove(\'visible\')">×</button>'
-    + '<h2>'+m.label+'</h2>'
-    + '<div class="modal-range">Optimal: '+m.min+'–'+m.max+(m.unit?' '+m.unit:'')+'</div>'
-    + '<div class="modal-section"><div class="modal-section-title">What is it?</div><div class="modal-body">'+m.desc+'</div></div>'
-    + '<div class="modal-section"><div class="modal-section-title">What to do</div><div class="modal-body">'+m.rec+'</div></div>';
+  var html = '<button class="modal-close" onclick="closeInfoModal()">×</button>'
+    + '<h2>' + m.label + '</h2>'
+    + '<div class="modal-range">' + (m.infoOnly ? 'Informational' : 'Ideal: ' + m.optMin + ' – ' + m.optMax + ' ' + m.unit) + '</div>'
+    + '<div class="modal-section"><div class="modal-section-title">About</div><div class="modal-body">' + m.desc + '</div></div>'
+    + '<div class="modal-section"><div class="modal-section-title">Recommendation</div><div class="modal-body">' + m.rec + '</div></div>';
   document.getElementById('info-modal-body').innerHTML = html;
   document.getElementById('info-modal').classList.add('visible');
 }
 
-function closeModal(event) {
-  if (event.target === document.getElementById('info-modal')) {
+function closeInfoModal(e) {
+  if (!e || e.target === document.getElementById('info-modal')) {
     document.getElementById('info-modal').classList.remove('visible');
   }
 }
 
 // ══════════════════════════════════════════════════════
-// Helpers
+// Print report
 // ══════════════════════════════════════════════════════
-function statusBadge(value, m) {
-  if (value == null || value === '' || value === undefined) return '<span class="badge-gray">—</span>';
-  var v = parseFloat(value);
-  if (isNaN(v)) return '<span class="badge-gray">—</span>';
-  var cls = (v >= m.min && v <= m.max) ? 'badge-green' : v < m.min ? 'badge-red' : 'badge-orange';
-  return '<span class="badge '+cls+'">'+value+(m.unit?' '+m.unit:'')+'</span>';
+function printCustomerReport(id) {
+  var c = customers.find(function(x){ return x.id === id; });
+  if (!c) return;
+  var cs = samples.filter(function(s){ return s.customerId === id; }).sort(function(a,b){ return b.year - a.year; });
+  if (cs.length === 0) { showNotification('No samples to print.', 'error'); return; }
+
+  var years = cs.map(function(s){ return s.year; });
+  var today = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  var html = '<div class="report-paper">';
+  html += '<div class="report-header">'
+    + '<div class="report-logo"><span>SoilTracks</span><span style="font-size:13px;font-weight:400;color:#666">Lawns Plants &amp; Pests LLC</span></div>'
+    + '<div class="report-customer"><div class="report-customer-name">' + esc(c.name) + '</div>'
+    + '<div class="report-customer-sub">' + (c.field ? esc(c.field) + ' · ' : '') + 'Printed ' + today + '</div></div>'
+    + '</div>';
+
+  html += '<div class="report-section-title">Soil Test Results</div>';
+  html += '<table class="report-table"><thead><tr><th>Metric</th><th>Unit</th><th>Ideal Range</th>';
+  years.forEach(function(y){ html += '<th class="center">' + y + '</th>'; });
+  html += '</tr></thead><tbody>';
+
+  LAB_SECTIONS.forEach(function(section) {
+    html += '<tr><td colspan="' + (3 + years.length) + '" style="background:#f0f7ee;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#2d5a1b;padding:8px 10px">' + section + '</td></tr>';
+    METRICS.filter(function(m){ return m.section === section; }).forEach(function(m) {
+      html += '<tr><td>' + m.label + '</td><td style="color:#999">' + (m.unit || '—') + '</td>';
+      html += '<td style="font-family:monospace;font-size:11px;color:#999">' + (m.infoOnly ? 'info' : m.optMin + '–' + m.optMax) + '</td>';
+      cs.forEach(function(s) {
+        var val = s[m.key];
+        var n = parseFloat(val);
+        var color = '';
+        if (!m.infoOnly && !isNaN(n)) {
+          color = (n >= m.optMin && n <= m.optMax) ? 'color:#16a34a' : (n > m.optMax ? 'color:#d97706' : 'color:#dc2626');
+        }
+        html += '<td class="center" style="' + color + '">' + (val !== null && val !== undefined && val !== '' ? parseFloat(val).toFixed(1) : '—') + '</td>';
+      });
+      html += '</tr>';
+    });
+  });
+
+  html += '<tr><td colspan="' + (3 + years.length) + '" style="background:#f0f7ee;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#2d5a1b;padding:8px 10px">Recommendations</td></tr>';
+  REC_KEYS.forEach(function(r) {
+    html += '<tr><td colspan="3">' + r.label + '</td>';
+    cs.forEach(function(s) {
+      var v = s[r.key];
+      html += '<td class="center">' + (v !== null && v !== undefined && v !== '' ? esc(v) : '—') + '</td>';
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  html += '<div class="report-footer"><span>SoilTracks · Lawns Plants &amp; Pests LLC</span><span>' + today + '</span></div>';
+  html += '</div>';
+
+  var w = window.open('', '_blank', 'width=900,height=700');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Soil Report — ' + c.name + '</title>'
+    + '<style>body{margin:20px;font-family:sans-serif;background:white}'
+    + '.report-paper{max-width:850px;margin:0 auto}'
+    + '.report-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;border-bottom:3px solid #2d5a1b;padding-bottom:16px;flex-wrap:wrap;gap:12px}'
+    + '.report-logo{font-size:20px;font-weight:900;color:#2d5a1b;line-height:1.2}'
+    + '.report-customer-name{font-size:18px;font-weight:700;color:#2d5a1b}'
+    + '.report-customer-sub{font-size:12px;color:#666;margin-top:3px}'
+    + '.report-section-title{font-size:12px;font-weight:700;color:#2d5a1b;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}'
+    + 'table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:20px}'
+    + 'th{background:#f0f7ee;padding:7px 10px;text-align:left;color:#2d5a1b;font-weight:600}'
+    + 'th.center{text-align:center}'
+    + 'td{padding:7px 10px;border-bottom:1px solid #eee}'
+    + 'td.center{text-align:center;font-weight:700;font-family:monospace}'
+    + 'tr:nth-child(even) td{background:#f9f9f9}'
+    + '.report-footer{margin-top:24px;padding-top:16px;border-top:1px solid #eee;display:flex;justify-content:space-between;font-size:11px;color:#999}'
+    + '@media print{@page{margin:1cm}}'
+    + '</style></head><body>' + html + '</body></html>');
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 400);
 }
 
-function recBadge(val) {
-  if (!val || val === undefined) return '<span class="badge-gray">—</span>';
-  var isNone = String(val).toLowerCase() === 'none' || val === '0' || val === '';
-  return '<span class="badge '+(isNone?'badge-green':'badge-orange')+'">'+(isNone?'None':val)+'</span>';
+// ══════════════════════════════════════════════════════
+// Settings
+// ══════════════════════════════════════════════════════
+function renderSettings() {
+  var apiKey = getApiKey();
+  var masked = apiKey ? apiKey.substring(0, 10) + '••••••••••••••••' : '';
+
+  var html = '<div class="page-title">Settings</div>'
+    + '<div class="page-sub">API key, data backup, and app info.</div>';
+
+  html += '<div class="card"><div class="sec-title">AI Scanning (Anthropic)</div>';
+  html += '<div class="setting-row">'
+    + '<div><div class="setting-label">API Key</div>'
+    + '<div class="setting-sub">Required for photo scanning. Get yours at <a href="https://console.anthropic.com" target="_blank" style="color:#4ade80">console.anthropic.com</a>.</div></div>'
+    + (masked ? '<span class="api-key-display">' + masked + '</span>' : '<span style="color:#57534e;font-family:sans-serif;font-size:13px">Not set</span>')
+    + '</div>';
+
+  html += '<div class="form-group" style="margin-top:14px">'
+    + '<label class="form-label">Enter / Update API Key</label>'
+    + '<input class="form-input" id="set-apikey" type="password" placeholder="sk-ant-..." autocomplete="off">'
+    + '</div>';
+  html += '<button class="btn-green btn-sm" onclick="saveApiKey()">Save API Key</button>';
+  if (apiKey) {
+    html += ' <button class="btn-danger btn-sm" onclick="clearApiKey()" style="margin-left:8px">Clear Key</button>';
+  }
+  html += '</div>';
+
+  html += '<div class="card"><div class="sec-title">Data</div>';
+  html += '<div style="font-family:sans-serif;font-size:13px;color:#78716c;margin-bottom:14px">'
+    + customers.length + ' customers · ' + samples.length + ' samples stored locally in your browser.</div>';
+  html += '<div class="btn-row">'
+    + '<button class="btn-outline btn-sm" onclick="exportJSON()">Export Backup (.json)</button>'
+    + '<button class="btn-outline btn-sm" onclick="document.getElementById(\'import-input\').click()">Import Backup</button>'
+    + '</div>';
+  html += '<div style="margin-top:14px">'
+    + '<button class="btn-danger btn-sm" onclick="confirmClearAll()">Clear All Data</button>'
+    + '</div></div>';
+
+  html += '<div class="card"><div class="sec-title">About</div>'
+    + '<div style="font-family:sans-serif;font-size:13px;color:#78716c;line-height:1.7">'
+    + '<b style="color:#d6d3d1">SoilTracks</b> — Soil sample tracker for Lawns Plants &amp; Pests LLC.<br>'
+    + 'Data is stored in your browser\'s local storage. Use <b>Export Backup</b> regularly to avoid data loss.<br>'
+    + 'AI scanning uses Claude (Anthropic) directly from your browser. Your API key is never sent anywhere except Anthropic.'
+    + '</div></div>';
+
+  setRoot(html);
 }
 
-function notify(msg, type) {
-  var el = document.getElementById('notification');
-  el.textContent = msg;
-  el.className = 'notification ' + (type || 'success');
-  el.style.display = 'block';
-  setTimeout(function(){ el.style.display = 'none'; }, 5000);
+function saveApiKey() {
+  var val = document.getElementById('set-apikey').value.trim();
+  if (!val) { showNotification('Please enter an API key.', 'error'); return; }
+  if (!val.startsWith('sk-ant-')) { showNotification('API key should start with sk-ant-', 'error'); return; }
+  setApiKey(val);
+  showNotification('API key saved.', 'success');
+  renderSettings();
 }
 
-function showError(err) {
-  setContent('<div class="card" style="color:#f87171;font-family:sans-serif"><b>Error:</b> '+(err.message||err)+'</div>');
+function clearApiKey() {
+  localStorage.removeItem(LS.API_KEY);
+  showNotification('API key cleared.', 'info');
+  renderSettings();
 }
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+// ══════════════════════════════════════════════════════
+// Export / Import
+// ══════════════════════════════════════════════════════
+function exportJSON() {
+  var data = { version: 1, exportedAt: new Date().toISOString(), customers: customers, samples: samples };
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'soiltracks-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showNotification('Backup downloaded.', 'success');
 }
 
-function formatDate(iso) {
-  if (!iso) return '';
-  try { return new Date(iso).toLocaleDateString(); } catch(e) { return iso; }
+function importJSON(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!Array.isArray(data.customers) || !Array.isArray(data.samples)) {
+        showNotification('Invalid backup file format.', 'error'); return;
+      }
+      showConfirm(
+        'Import Backup?',
+        'This will replace all current data with ' + data.customers.length + ' customers and ' + data.samples.length + ' samples from the backup.',
+        function() {
+          customers = data.customers;
+          samples   = data.samples;
+          saveCustomers(); saveSamples();
+          showNotification('Data imported: ' + customers.length + ' customers, ' + samples.length + ' samples.', 'success');
+          renderDashboard();
+        }
+      );
+    } catch(err) {
+      showNotification('Could not read file: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmClearAll() {
+  showConfirm(
+    'Clear All Data?',
+    'This permanently deletes ALL customers (' + customers.length + ') and samples (' + samples.length + '). This cannot be undone.',
+    function() {
+      customers = []; samples = [];
+      saveCustomers(); saveSamples();
+      showNotification('All data cleared.', 'info');
+      renderDashboard();
+    }
+  );
+}
+
+// ══════════════════════════════════════════════════════
+// Analytics helpers
+// ══════════════════════════════════════════════════════
+function calcTopIssues() {
+  var counts = {};
+  samples.forEach(function(s) {
+    METRICS.forEach(function(m) {
+      if (m.infoOnly) return;
+      var n = parseFloat(s[m.key]);
+      if (isNaN(n)) return;
+      if (n < m.optMin || n > m.optMax) counts[m.key] = (counts[m.key] || 0) + 1;
+    });
+  });
+  return Object.keys(counts)
+    .sort(function(a,b){ return counts[b] - counts[a]; })
+    .slice(0, 4)
+    .map(function(k) {
+      var m = METRICS.find(function(x){ return x.key === k; });
+      return { key: k, label: m ? m.label : k, count: counts[k] };
+    });
+}
+
+function calcOverallImprovement() {
+  if (samples.length === 0) return null;
+  var pHScores = samples.filter(function(s){ return s.pH !== null && s.pH !== undefined; }).map(function(s){ return parseFloat(s.pH); }).filter(function(n){ return !isNaN(n); });
+  if (pHScores.length === 0) return null;
+  var total = 0, count = 0;
+  METRICS.forEach(function(m) {
+    if (m.infoOnly) return;
+    var vals = samples.map(function(s){ return parseFloat(s[m.key]); }).filter(function(n){ return !isNaN(n); });
+    if (vals.length === 0) return;
+    var ok = vals.filter(function(n){ return n >= m.optMin && n <= m.optMax; }).length;
+    total += Math.round((ok / vals.length) * 100);
+    count++;
+  });
+  return count > 0 ? Math.round(total / count) : null;
 }
 </script>
 </body>
