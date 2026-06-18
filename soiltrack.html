@@ -312,6 +312,13 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4DFO_qHZkzBO_a4LH0CZ-vPJU8tG4mfFoFUYQrBgepRkmXflDcvWF4b1IVPJuHOtAxA/exec';
 const SHEET_ID = '10-2QSreupS-8sdtx3V5fDrZ4uqAHnwHMOuvGVRKL9u8';
 const API_KEY = 'AIzaSyAm0AjOaeEzK4fzbbz-AFIcrJ-m1dc5VwA';
+const GAS = typeof google !== 'undefined' && google.script && google.script.run;
+
+function gasCall(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+  });
+}
 
 const METRICS = [
   { key: 'pH', label: 'Soil pH', unit: '', idealMin: 6.0, idealMax: 7.0, section: 'Lab Results', explanation: 'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0. Below 6.0, phosphorus and calcium become less available.' },
@@ -340,12 +347,20 @@ let selectedCustomer = null;
 // ---- DATA LOADING ----
 async function loadData() {
   try {
-    const [cRes, sRes] = await Promise.all([
-      fetch(`${SCRIPT_URL}?sheet=Customers`),
-      fetch(`${SCRIPT_URL}?sheet=Samples`)
-    ]);
-    const cData = await cRes.json();
-    const sData = await sRes.json();
+    let cData, sData;
+    if (GAS) {
+      [cData, sData] = await Promise.all([
+        gasCall('getSheetData', 'Customers'),
+        gasCall('getSheetData', 'Samples'),
+      ]);
+    } else {
+      const [cRes, sRes] = await Promise.all([
+        fetch(`${SCRIPT_URL}?sheet=Customers`),
+        fetch(`${SCRIPT_URL}?sheet=Samples`)
+      ]);
+      cData = await cRes.json();
+      sData = await sRes.json();
+    }
     if (cData.length > 1) {
       const [ch, ...crows] = cData;
       customers = crows.map(r => Object.fromEntries(ch.map((h,i) => [h, r[i]||''])));
@@ -363,6 +378,10 @@ async function loadData() {
 }
 
 async function saveToSheet(sheet, row) {
+  if (GAS) {
+    await gasCall('saveRow', sheet, row);
+    return;
+  }
   await fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -600,14 +619,19 @@ async function handlePhoto(file) {
     const base64 = e.target.result.split(',')[1];
     document.getElementById('upload-preview-wrap').innerHTML = `<img src="${e.target.result}" class="upload-preview">`;
     try {
-      const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'extract', imageBase64: base64, mimeType: file.type || 'image/jpeg' }),
-      });
-      const result = await res.json();
-      if (result.error) throw new Error(result.error);
-      const parsed = result.data || result;
+      let parsed;
+      if (GAS) {
+        parsed = await gasCall('processExtraction', base64, file.type || 'image/jpeg');
+      } else {
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'extract', imageBase64: base64, mimeType: file.type || 'image/jpeg' }),
+        });
+        const result = await res.json();
+        if (result.error) throw new Error(result.error);
+        parsed = result.data || result;
+      }
       if (parsed.CustomerName) document.getElementById('f-customer').value = parsed.CustomerName;
       if (parsed.Field) document.getElementById('f-field').value = parsed.Field;
       if (parsed.Year) document.getElementById('f-year').value = parsed.Year;

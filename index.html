@@ -272,6 +272,13 @@
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4DFO_qHZkzBO_a4LH0CZ-vPJU8tG4mfFoFUYQrBgepRkmXflDcvWF4b1IVPJuHOtAxA/exec';
+const GAS = typeof google !== 'undefined' && google.script && google.script.run;
+
+function gasCall(fn, ...args) {
+  return new Promise((resolve, reject) => {
+    google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[fn](...args);
+  });
+}
 
 const METRICS = [
   { key: 'pH', label: 'Soil pH', unit: '', idealMin: 6.0, idealMax: 7.0, section: 'Lab Results', explanation: 'Measures soil acidity or alkalinity. Most nutrients are best available between 6.0–7.0.' },
@@ -300,6 +307,9 @@ let extractCallback = null;
 
 // ---- EXTRACT via Apps Script + Gemini ----
 async function extractWithForm(base64, mimeType) {
+  if (GAS) {
+    return await gasCall('processExtraction', base64, mimeType);
+  }
   const res = await fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -338,12 +348,20 @@ function compressImage(file) {
 // ---- DATA ----
 async function loadData() {
   try {
-    const [cRes, sRes] = await Promise.all([
-      fetch(SCRIPT_URL + '?sheet=Customers'),
-      fetch(SCRIPT_URL + '?sheet=Samples')
-    ]);
-    const cData = await cRes.json();
-    const sData = await sRes.json();
+    let cData, sData;
+    if (GAS) {
+      [cData, sData] = await Promise.all([
+        gasCall('getSheetData', 'Customers'),
+        gasCall('getSheetData', 'Samples'),
+      ]);
+    } else {
+      const [cRes, sRes] = await Promise.all([
+        fetch(SCRIPT_URL + '?sheet=Customers'),
+        fetch(SCRIPT_URL + '?sheet=Samples')
+      ]);
+      cData = await cRes.json();
+      sData = await sRes.json();
+    }
     if (Array.isArray(cData) && cData.length > 1) {
       const [ch, ...crows] = cData;
       customers = crows.map(r => Object.fromEntries(ch.map((h,i) => [h, r[i]||''])));
@@ -361,6 +379,10 @@ async function loadData() {
 }
 
 async function saveToSheet(sheet, row) {
+  if (GAS) {
+    await gasCall('saveRow', sheet, row);
+    return;
+  }
   await fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },

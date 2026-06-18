@@ -116,3 +116,23 @@ function respond(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
+
+function getSheetData(name) {
+  const sheet = getSheet(name);
+  if (!sheet) throw new Error('Sheet not found: ' + name);
+  return sheet.getDataRange().getValues();
+}
+
+function processExtraction(base64, mimeType) {
+  const extracted = extractSoilData(base64, mimeType);
+  getOrCreateCustomer(extracted.CustomerName);
+  saveSample(extracted);
+  return extracted;
+}
+
+function saveRow(sheetName, row) {
+  const sheet = getSheet(sheetName);
+  if (!sheet) throw new Error('Sheet not found: ' + sheetName);
+  sheet.appendRow(row);
+  return { success: true };
+}
