@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="Soil health tracking for Lawns Plants & Pests LLC. Upload Penn State soil test reports, track customer data, and generate professional reports.">
 <title>SoilTrack - Lawns Plants & Pests</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -108,9 +109,6 @@
 
 <div class="notification" id="notification"></div>
 
-<!-- Hidden iframe for CORS-free form submission -->
-<iframe name="hidden-frame" style="display:none"></iframe>
-
 <div class="header">
   <div class="logo">
     <div class="logo-icon">🌱</div>
@@ -191,7 +189,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Year</label>
-            <input class="form-input" id="f-year" type="number" value="2024">
+            <input class="form-input" id="f-year" type="number">
           </div>
         </div>
         <div class="form-group">
@@ -303,7 +301,8 @@ const LAB_SECTIONS = {
 let customers = [];
 let samples = [];
 let selectedCustomer = null;
-let extractCallback = null;
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
 // ---- EXTRACT via Apps Script + Gemini ----
 async function extractWithForm(base64, mimeType) {
@@ -415,10 +414,10 @@ function renderDashboard() {
   list.innerHTML = customers.map(c => {
     const cr = samples.filter(s => s.CustomerName === c.Name).sort((a,b) => a.Year - b.Year);
     const yrs = [...new Set(cr.map(r => r.Year))].join(', ');
-    return `<div class="customer-row" onclick="selectCustomer('${c.Name.replace(/'/g,"\\'")}')">
+    return `<div class="customer-row" onclick="selectCustomer('${esc(c.Name).replace(/'/g,"\\'")}')">
       <div>
-        <div class="customer-name">${c.Name}</div>
-        <div class="customer-sub">${c.Field||''} · ${cr.length} sample${cr.length!==1?'s':''} · ${yrs}</div>
+        <div class="customer-name">${esc(c.Name)}</div>
+        <div class="customer-sub">${esc(c.Field||'')} · ${cr.length} sample${cr.length!==1?'s':''} · ${yrs}</div>
       </div>
       <div style="color:#78716c;font-size:20px">›</div>
     </div>`;
@@ -701,6 +700,7 @@ function notify(msg, type='success') {
 }
 
 buildLabFields();
+document.getElementById('f-year').value = new Date().getFullYear();
 loadData();
 </script>
 </body>

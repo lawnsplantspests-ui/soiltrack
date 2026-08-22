@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Soil health tracking for Lawns Plants & Pests LLC. Upload Penn State soil test reports, track customer data, and generate professional reports.">
 <title>SoilTrack - Lawns Plants & Pests</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -224,7 +225,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Year</label>
-            <input class="form-input" id="f-year" type="number" value="2024">
+            <input class="form-input" id="f-year" type="number">
           </div>
         </div>
         <div class="form-group">
@@ -310,8 +311,6 @@
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4DFO_qHZkzBO_a4LH0CZ-vPJU8tG4mfFoFUYQrBgepRkmXflDcvWF4b1IVPJuHOtAxA/exec';
-const SHEET_ID = '10-2QSreupS-8sdtx3V5fDrZ4uqAHnwHMOuvGVRKL9u8';
-const API_KEY = 'AIzaSyAm0AjOaeEzK4fzbbz-AFIcrJ-m1dc5VwA';
 const GAS = typeof google !== 'undefined' && google.script && google.script.run;
 
 function gasCall(fn, ...args) {
@@ -739,6 +738,7 @@ function notify(msg, type = 'success') {
 
 // ---- INIT ----
 buildLabFields();
+document.getElementById('f-year').value = new Date().getFullYear();
 loadData();
 </script>
 </body>
